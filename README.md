@@ -1,8 +1,10 @@
 # SpinfoSecurity
 
-> Defensive cybersecurity automation for Windows and critical-infrastructure-adjacent environments.
+Defensive **OT/ICS** cybersecurity automation in **PowerShell** and **Bash**.
 
-I build practical **PowerShell** and **Bash** tools for authorized security assessment, exposure discovery, and analyst-ready reporting.
+Portfolio site: **[spinfosecurity.github.io](https://spinfosecurity.github.io/)**
+
+I build practical tools for authorized security assessment, exposure discovery, and analyst-ready reporting.
 
 ## Featured projects
 
@@ -15,28 +17,16 @@ I build practical **PowerShell** and **Bash** tools for authorized security asse
 
 ## Core capabilities
 
-- PowerShell automation for Windows diagnostics, remediation, and security operations
+- PowerShell automation for Windows diagnostics and security operations
 - OT/ICS exposure discovery and critical-infrastructure security workflows
 - Network service and protocol visibility for authorized assessments
-- JSON and CSV reporting for incident triage, remediation, and ticketing
-- ServiceNow/ITSM workflow integration and operational automation
-- Event-log analysis and endpoint troubleshooting
+- JSON and CSV reporting for incident triage and ticketing
+- GitHub Actions linting, syntax validation, and non-networked tests
 
 ## How I build
 
 - **Defensive by design:** explicit authorization-only scope
 - **Operationally aware:** safety guidance and documented limitations
 - **Evidence-focused:** findings built for engineering and security triage
-- **Quality-minded:** GitHub Actions linting, syntax validation, and non-networked tests
 
-## Current focus
-
-Building free, open-source security automation for critical-infrastructure-adjacent teams, small utilities, facilities operators, and organizations that need practical security outcomes without unnecessary complexity.
-
-## Collaboration
-
-Constructive feedback, responsible bug reports, and defensive-security contributions are welcome. Use the issue and security-reporting guidance in each project.
-
----
-
-**Authorized defensive use only.** These projects are not exploit frameworks and must never be used to access, disrupt, or test systems without explicit asset-owner permission.
+**Authorized defensive use only.** These projects are not exploit frameworks and must never be used without explicit asset-owner permission.

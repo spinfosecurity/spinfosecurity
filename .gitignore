@@ -1,0 +1,17 @@
+# Never publish local documents or office files
+*.doc
+*.docx
+*.odt
+*.xls
+*.xlsx
+*.xlsm
+*.ppt
+*.pptx
+*.pdf
+*.pkt
+*.ods
+*.rtf
+*.csv
+*.zip
+.DS_Store
+Thumbs.db
