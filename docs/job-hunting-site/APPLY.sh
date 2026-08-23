@@ -14,10 +14,11 @@ ACTIVE="$(gh api user --jq .login)"
 echo "==> Cloning site..."
 git clone --depth 1 https://github.com/spinfosecurity/spinfosecurity.github.io.git "$WORK/site"
 cd "$WORK/site"
-BRANCH="cursor/job-hunting-site-ux-$(date +%Y%m%d)"
+BRANCH="cursor/job-hunting-site-ux-$(date +%Y%m%d%H%M)"
 git checkout -b "$BRANCH"
 
 cp "$ROOT/index.html" "$ROOT/styles.css" "$ROOT/404.html" "$ROOT/favicon.svg" "$ROOT/robots.txt" "$ROOT/sitemap.xml" .
+cp "$ROOT/og-image.svg" . 2>/dev/null || true
 cp "$ROOT/.nojekyll" . 2>/dev/null || touch .nojekyll
 mkdir -p advisories
 cp "$ROOT/advisories/index.html" advisories/
@@ -31,10 +32,10 @@ done
 
 git add -A
 git commit -m "$(cat <<'MSG'
-Point Advisories nav at dedicated ics-ot-advisories site
+Polish portfolio UX and feature ICS/OT Advisories
 
-Keep a redirect at /advisories/ and link the SEO-friendly
-CISA CSAF aggregator repo / GitHub Pages project.
+Brand-first hero, clearer human copy, dedicated advisories section,
+and synced CSS so the live site stays professional and readable.
 MSG
 )"
 git push -u origin HEAD
@@ -42,5 +43,5 @@ git push -u origin HEAD
 echo ""
 echo "Pushed $BRANCH"
 echo "Create + merge PR:"
-echo "  gh pr create --repo spinfosecurity/spinfosecurity.github.io --base main --head $BRANCH --title \"Point Advisories to dedicated ics-ot-advisories site\" --body \"Redirect /advisories/ and nav links to the SEO-friendly dedicated repo Pages site.\""
+echo "  gh pr create --repo spinfosecurity/spinfosecurity.github.io --base main --head $BRANCH --title \"Polish portfolio UX and feature ICS/OT Advisories\" --body \"Brand-first hero, human-readable copy, Advisories section and nav.\""
 echo "  gh pr merge --repo spinfosecurity/spinfosecurity.github.io --merge --delete-branch"
