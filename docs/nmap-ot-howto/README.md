@@ -1,34 +1,67 @@
 # Nmap OT Howto
 
-**How to set up Nmap and use it for authorized ICS/OT exposure discovery.**
+**Set up Nmap. Scan ICS/OT safely. Turn open ports into hardening work.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Nmap](https://img.shields.io/badge/Nmap-7.80%2B-blue.svg)](https://nmap.org/)
-[![Posture](https://img.shields.io/badge/Posture-Defensive%20discovery-0c6f74.svg)](SAFE-USE.md)
+[![Defensive](https://img.shields.io/badge/Posture-Defensive%20only-0c6f74.svg)](SAFE-USE.md)
 [![No exploits](https://img.shields.io/badge/Exploits-None-lightgrey.svg)](SAFE-USE.md)
-[![Portfolio](https://img.shields.io/badge/Portfolio-spinfosecurity.github.io-0c6f74?style=flat-square)](https://spinfosecurity.github.io)
 
-A short human guide: install Nmap, pick safe options for operational technology, discover common ICS protocols, and turn open ports into hardening work.
+<br>
 
-> **Authorized networks only.** Get written approval and an OT change window before you scan. Aggressive IT-style scanning can disrupt PLCs, RTUs, and HMIs. This project ships **no exploit payloads**.
+| | |
+|:--|:--|
+| **Who this is for** | Defenders, OT engineers, and authorized assessors |
+| **What you get** | Install steps, OT-safe defaults, copy-paste scan commands, reporting template |
+| **What you won’t get** | Exploit payloads, credential attacks, or DoS recipes |
 
-**Companion:** [ICS OT Protector](https://github.com/spinfosecurity/ics-ot-protector) — sector scanners with port catalogs and CISA-oriented remediation notes.
+> **Stop if you don’t have written authorization.** Live OT can fault under aggressive scans. Read [SAFE-USE.md](SAFE-USE.md) before Step 3.
 
----
-
-## What you will do
-
-1. **Install** Nmap on your assessment workstation  
-2. **Confirm** scope, timing limits, and an abort contact with the OT owner  
-3. **Discover** hosts and common ICS ports slowly  
-4. **Identify** protocols with discovery-oriented NSE scripts  
-5. **Report** exposure for segmentation and remediation — not exploitation  
+Companion tooling: **[ICS OT Protector](https://github.com/spinfosecurity/ics-ot-protector)** · Portfolio: **[spinfosecurity.github.io](https://spinfosecurity.github.io)**
 
 ---
 
-## 1. Set up Nmap
+## Contents
 
-### Linux (Debian / Ubuntu)
+1. [Start here](#1-start-here)
+2. [Install Nmap](#2-install-nmap)
+3. [Pre-scan checklist](#3-pre-scan-checklist)
+4. [Scan workflow](#4-scan-workflow)
+5. [Protocol commands](#5-protocol-commands)
+6. [Port cheat sheet](#6-port-cheat-sheet)
+7. [Report findings](#7-report-findings)
+8. [Scope](#8-scope)
+
+---
+
+## 1. Start here
+
+```mermaid
+flowchart LR
+  A[Install Nmap] --> B[Authorize + window]
+  B --> C[Discover hosts]
+  C --> D[Scan ICS ports]
+  D --> E[Identify protocol]
+  E --> F[Remediate]
+```
+
+| Step | You do | Time sense |
+|------|--------|------------|
+| **2** | Install and verify Nmap | Once per workstation |
+| **3** | Complete the checklist | Every engagement |
+| **4** | Run discovery → ports → NSE | Slow on purpose |
+| **7** | Write exposure → action | Per finding |
+
+Replace `<target>` everywhere with a host or CIDR from your **signed scope**.
+
+---
+
+## 2. Install Nmap
+
+Pick your OS. When finished you should see a version string from `nmap --version`.
+
+<details>
+<summary><strong>Linux — Debian / Ubuntu</strong></summary>
 
 ```bash
 sudo apt update
@@ -36,74 +69,87 @@ sudo apt install -y nmap
 nmap --version
 ```
 
-### Linux (RHEL / Fedora / CentOS)
+</details>
+
+<details>
+<summary><strong>Linux — RHEL / Fedora / CentOS</strong></summary>
 
 ```bash
-sudo dnf install -y nmap    # or: sudo yum install -y nmap
+sudo dnf install -y nmap    # older: sudo yum install -y nmap
 nmap --version
 ```
 
-### macOS
+</details>
+
+<details>
+<summary><strong>macOS</strong></summary>
 
 ```bash
 brew install nmap
 nmap --version
 ```
 
-### Windows
+</details>
 
-1. Download the official installer from [nmap.org/download](https://nmap.org/download.html)  
-2. Run the installer (includes Npcap when selected)  
-3. Open **Nmap - Zenmap GUI** or `nmap` from “Nmap Command Prompt”  
-4. Confirm: `nmap --version`
+<details>
+<summary><strong>Windows</strong></summary>
 
-### Confirm NSE scripts you will use
+1. Download the installer → [nmap.org/download](https://nmap.org/download.html)
+2. Install (enable **Npcap** when prompted)
+3. Open **Nmap Command Prompt** or Zenmap
+4. Run `nmap --version`
+
+</details>
+
+### Verify discovery scripts
 
 ```bash
 nmap --script-help 'modbus-discover,enip-info,bacnet-info,s7-info,omron-info,fox-info,iec-identify'
 ```
 
-If a script name is missing, upgrade Nmap. Script availability varies by version.
+| Result | Action |
+|--------|--------|
+| Script listed | You’re good |
+| Script missing | Upgrade Nmap, then re-check |
 
 ---
 
-## 2. Before you scan (required)
+## 3. Pre-scan checklist
 
-Do not skip this on live OT.
+Complete every box before touching production OT.
 
-| Check | Why |
-|-------|-----|
-| Written authorization (CIDRs, excludes, max rate) | Legal / policy boundary |
-| Change window + OT owner on call | Process impact is possible |
-| Abort criteria | Stop if faults, lost I/O, or operator alarms appear |
-| Prefer passive data first | Inventories, firewall logs, SPAN often reduce active probing |
+- [ ] Written authorization (targets, excludes, max rate, contacts)
+- [ ] Change window scheduled; OT / process owner reachable
+- [ ] Abort plan agreed (stop scan · restore path · escalate)
+- [ ] Passive sources checked first (inventory, firewall logs, SPAN) where available
+- [ ] Same timing options understood by the team
 
-Full checklist: [SAFE-USE.md](SAFE-USE.md).
+### OT-safe defaults
 
-**OT-safe defaults vs IT habits**
+| Do this | Don’t do this on live OT |
+|---------|---------------------------|
+| `-sT -Pn -T1` or `-T2` | `-T4` / `-T5` |
+| `--scan-delay 200ms` | `-A` (OS + scripts + traceroute bundle) |
+| `--max-rate 20`–`30` | Full `-p-` or large UDP blasts |
+| Narrow ICS port lists | Unreviewed `vuln` NSE on controllers |
 
-| Use on OT | Avoid until proven safe |
-|-----------|-------------------------|
-| `-sT -Pn -T1` (or `-T2`) | `-T4` / `-T5` |
-| `--scan-delay 200ms` | `-A` (bundles OS detect, scripts, traceroute) |
-| `--max-rate 20`–`30` | Full `-p-` sweeps |
-| Narrow ICS port lists | Unreviewed `vuln` NSE against controllers |
+> **Abort immediately** if controllers fault, I/O drops, or operators report process impact.
 
 ---
 
-## 3. How to use it — step by step
+## 4. Scan workflow
 
-Replace `<target>` with an authorized host or CIDR from your scope document.
+Three passes. Stay slow. One purpose per command.
 
-### Step A — Host discovery
+### A — Find hosts
 
 ```bash
 nmap -sn -T2 --max-retries 1 <target>
 ```
 
-ICMP is often filtered on OT networks. If this returns nothing, skip to a slow TCP port pass with `-Pn` (treat hosts as online).
+ICMP is often filtered on OT. Empty result → skip ahead and use `-Pn` on the port scan (treat hosts as online).
 
-### Step B — Common ICS/OT ports
+### B — Probe common ICS ports
 
 ```bash
 nmap -sT -Pn -T1 --scan-delay 200ms --max-rate 30 \
@@ -112,111 +158,118 @@ nmap -sT -Pn -T1 --scan-delay 200ms --max-rate 30 \
   <target>
 ```
 
-`-oA ot-ports` writes `ot-ports.nmap`, `.gnmap`, and `.xml` for your engagement package (keep them out of public git).
+| Flag | Meaning |
+|------|---------|
+| `-sT` | TCP connect (predictable, firewall-friendly) |
+| `-Pn` | Skip host ping; scan listed targets |
+| `-T1` | Slow timing template |
+| `-oA ot-ports` | Saves `.nmap` / `.gnmap` / `.xml` (keep offline) |
 
-### Step C — Identify the protocol (NSE)
+### C — Identify the open protocol
 
-Run **one protocol at a time** against hosts that showed the matching open port:
+Only run NSE against hosts that showed the matching port in step B.  
+Use the [protocol command table](#5-protocol-commands) below — **one protocol at a time**.
+
+> **Tip:** If an NSE description mentions privilege gain, brute force, or DoS, skip it on production controllers. Identity / discovery only.
+
+---
+
+## 5. Protocol commands
+
+Shared slow prefix (copy once, swap port + script):
 
 ```bash
-# Modbus/TCP — Nmap marks this script intrusive; go slow
-nmap -sT -Pn -T1 --scan-delay 200ms -p 502 \
-  --script modbus-discover <target>
-
-# EtherNet/IP
-nmap -sT -Pn -T1 --scan-delay 200ms -p 44818 \
-  --script enip-info <target>
-
-# Siemens S7
-nmap -sT -Pn -T1 --scan-delay 200ms -p 102 \
-  --script s7-info <target>
-
-# OMRON FINS
-nmap -sT -Pn -T1 --scan-delay 200ms -p 9600 \
-  --script omron-info <target>
-
-# Niagara Fox
-nmap -sT -Pn -T1 --scan-delay 200ms -p 1911,4911 \
-  --script fox-info <target>
-
-# IEC 60870-5-104 — also marked intrusive; go slow
-nmap -sT -Pn -T1 --scan-delay 200ms -p 2404 \
-  --script iec-identify <target>
-
-# BACnet/IP (usually UDP)
-nmap -sU -Pn -T1 --scan-delay 200ms -p 47808 \
-  --script bacnet-info <target>
-
-# DNP3 — many builds have no identity NSE; treat open 20000 as exposure
-nmap -sT -Pn -T1 --scan-delay 200ms -p 20000 <target>
+nmap -sT -Pn -T1 --scan-delay 200ms -p <PORT> --script <SCRIPT> <target>
 ```
 
-**Rule of thumb:** if an NSE description sounds like privilege gain, brute force, or DoS, do not use it on production controllers. Stick to identity / discovery and document findings for hardening.
+| If you saw port | Protocol | Command |
+|-----------------|----------|---------|
+| **502** | Modbus/TCP | `nmap -sT -Pn -T1 --scan-delay 200ms -p 502 --script modbus-discover <target>` |
+| **44818** | EtherNet/IP | `nmap -sT -Pn -T1 --scan-delay 200ms -p 44818 --script enip-info <target>` |
+| **102** | Siemens S7 | `nmap -sT -Pn -T1 --scan-delay 200ms -p 102 --script s7-info <target>` |
+| **9600** | OMRON FINS | `nmap -sT -Pn -T1 --scan-delay 200ms -p 9600 --script omron-info <target>` |
+| **1911 / 4911** | Niagara Fox | `nmap -sT -Pn -T1 --scan-delay 200ms -p 1911,4911 --script fox-info <target>` |
+| **2404** | IEC-104 | `nmap -sT -Pn -T1 --scan-delay 200ms -p 2404 --script iec-identify <target>` |
+| **47808** | BACnet/IP | `nmap -sU -Pn -T1 --scan-delay 200ms -p 47808 --script bacnet-info <target>` |
+| **20000** | DNP3 | `nmap -sT -Pn -T1 --scan-delay 200ms -p 20000 <target>` |
+
+| Flag | Note |
+|------|------|
+| `modbus-discover` / `iec-identify` | Marked **intrusive** by Nmap — extra caution |
+| BACnet | Usually **UDP** (`-sU`), not TCP |
+| DNP3 | Many Nmap builds have no identity NSE — open `20000` = exposure to investigate |
 
 ---
 
-## 4. Port reference
+## 6. Port cheat sheet
 
-| Port | Typical use |
-|------|-------------|
-| 102 | Siemens S7comm |
-| 502 | Modbus/TCP |
-| 2404 | IEC 60870-5-104 |
-| 20000 | DNP3 |
-| 44818 | EtherNet/IP / CIP |
-| 47808 | BACnet/IP (often UDP) |
-| 1911, 4911 | Niagara Fox |
-| 2222 | EtherNet/IP (alternate) |
-| 2455 | WAGO / related automation |
-| 9600 | OMRON FINS |
+| Port | Typical service | Transport |
+|------|-----------------|-----------|
+| 102 | Siemens S7comm | TCP |
+| 502 | Modbus/TCP | TCP |
+| 2404 | IEC 60870-5-104 | TCP |
+| 20000 | DNP3 | TCP |
+| 44818 | EtherNet/IP / CIP | TCP |
+| 47808 | BACnet/IP | UDP (often) |
+| 1911, 4911 | Niagara Fox | TCP |
+| 2222 | EtherNet/IP (alt) | TCP |
+| 2455 | WAGO / related | TCP |
+| 9600 | OMRON FINS | TCP |
 
-An open port means **reachability**, not “exploit now.” Confirm whether that path should exist between zones (Purdue / IEC 62443).
+**Open port ≠ vulnerability.** It means reachability. Ask: should this conduit exist between these zones (Purdue / IEC 62443)?
 
 ---
 
-## 5. What to do with results
+## 7. Report findings
 
-For each open service, write down:
+Capture four fields per service:
 
-1. **Asset** — IP, role, zone  
-2. **Exposure** — who can reach it (engineering VLAN, enterprise, internet?)  
-3. **Expected?** — allowlisted conduit vs accidental flat network  
-4. **Action** — firewall allowlist, jump host, disable unused service, vendor patch path, monitoring  
+| Field | Ask |
+|-------|-----|
+| **Asset** | IP, role, zone |
+| **Exposure** | Who can reach it — engineering VLAN, enterprise, internet? |
+| **Expected?** | Allowlisted conduit or accidental flat path? |
+| **Action** | Allowlist · jump host · disable service · patch path · monitor |
 
-### Minimal report block
+### Copy-paste report block
 
 ```text
-Engagement: <name>   Window: <dates>   Auth: <ticket>
+Engagement: <name>     Window: <dates>     Auth: <ticket>
 Scope: <CIDRs>
-Method: Nmap -sT -T1, ports <list>, scripts <list>
+Method: Nmap -sT -T1 · ports <list> · scripts <list>
+
 Findings:
-  - <ip:port> <protocol> zone=<z> expected=<y/n> action=<...>
+  - <ip:port>  protocol=<...>  zone=<...>  expected=<y/n>
+    action: <segmentation | allowlist | patch | monitor>
+
 Incidents during scan: <none | describe>
 ```
 
-Map product families to public guidance (e.g. CISA ICS advisories). Prefer segmentation and access control over chasing proof-of-concept exploits on live process networks.
+Prefer CISA ICS advisories and network controls over chasing exploit PoCs on live process networks.
 
 ---
 
-## 6. Scope of this guide
+## 8. Scope
 
-| In scope | Out of scope |
-|----------|--------------|
-| Install and configure Nmap for OT-aware discovery | Exploit development |
-| Safe timing and rate limits | DoS testing against controllers |
+| In this guide | Not in this guide |
+|---------------|-------------------|
+| Install + verify Nmap | Exploit development |
+| OT-safe timing / rate limits | DoS against controllers |
 | Identity-oriented NSE | Credential attacks |
-| Exposure → remediation reporting | Scanning without permission |
+| Exposure → remediation notes | Scanning without permission |
 
 ---
 
 ## Related
 
-- [ICS OT Protector](https://github.com/spinfosecurity/ics-ot-protector)  
-- [SpinfoSecurity portfolio](https://spinfosecurity.github.io)  
-- [Nmap download](https://nmap.org/download.html) · [NSE docs](https://nmap.org/nsedoc/)  
+| Resource | Link |
+|----------|------|
+| Sector scanners | [ICS OT Protector](https://github.com/spinfosecurity/ics-ot-protector) |
+| Portfolio | [spinfosecurity.github.io](https://spinfosecurity.github.io) |
+| Nmap download | [nmap.org/download](https://nmap.org/download.html) |
+| NSE reference | [nmap.org/nsedoc](https://nmap.org/nsedoc/) |
+| Safety checklist | [SAFE-USE.md](SAFE-USE.md) |
 
 ---
 
-## License
-
-MIT — see [LICENSE](LICENSE).
+MIT License — [LICENSE](LICENSE)
