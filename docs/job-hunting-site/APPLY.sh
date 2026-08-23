@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Publish the job-hunting site redesign to spinfosecurity.github.io
+# Publish the job-hunting site to spinfosecurity.github.io
 # Requires: gh authenticated as spinfosecurity
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -14,7 +14,7 @@ ACTIVE="$(gh api user --jq .login)"
 echo "==> Cloning site..."
 git clone --depth 1 https://github.com/spinfosecurity/spinfosecurity.github.io.git "$WORK/site"
 cd "$WORK/site"
-BRANCH="cursor/job-hunting-site-ux-$(date +%Y%m%d)"
+BRANCH="cursor/job-hunting-site-ux-$(date +%Y%m%d%H%M)"
 git checkout -b "$BRANCH"
 
 cp "$ROOT/index.html" "$ROOT/styles.css" "$ROOT/404.html" "$ROOT/favicon.svg" "$ROOT/robots.txt" "$ROOT/sitemap.xml" .
@@ -40,7 +40,20 @@ MSG
 git push -u origin HEAD
 
 echo ""
-echo "Pushed $BRANCH"
-echo "Create + merge PR:"
-echo "  gh pr create --repo spinfosecurity/spinfosecurity.github.io --base main --head $BRANCH --title \"Point Advisories to dedicated ics-ot-advisories site\" --body \"Redirect /advisories/ and nav links to the SEO-friendly dedicated repo Pages site.\""
-echo "  gh pr merge --repo spinfosecurity/spinfosecurity.github.io --merge --delete-branch"
+echo "==> Opening PR and merging..."
+PR_URL="$(
+  gh pr create \
+    --repo spinfosecurity/spinfosecurity.github.io \
+    --base main \
+    --head "$BRANCH" \
+    --title "Point Advisories to dedicated ics-ot-advisories site" \
+    --body "Redirect /advisories/ and nav links to https://spinfosecurity.github.io/ics-ot-advisories/."
+)"
+echo "PR: $PR_URL"
+PR_NUMBER="${PR_URL##*/}"
+gh pr merge "$PR_NUMBER" --repo spinfosecurity/spinfosecurity.github.io --merge --delete-branch
+
+echo ""
+echo "Done. Confirm with:"
+echo "  curl -sL https://spinfosecurity.github.io/ | grep -E 'ics-ot-advisories|Advisories' | head"
+echo "  curl -sI https://spinfosecurity.github.io/advisories/ | head"
