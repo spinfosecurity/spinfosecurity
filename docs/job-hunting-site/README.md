@@ -9,6 +9,7 @@ Truthful OT/ICS portfolio updates for https://spinfosecurity.github.io/
 - **SEO:** stronger titles/descriptions, keywords, Person + WebSite + SoftwareApplication JSON-LD, Open Graph/Twitter
 - **Job hunting:** open-to-roles framing, proof-of-work, skills table, role-fit section without inflating titles
 - **Accuracy:** TCP reachability / exposure candidates; removes CSV claim; clear is/is-not
+- **ICS/OT Advisories:** dedicated SEO repo + site at [ics-ot-advisories](https://github.com/spinfosecurity/ics-ot-advisories) ([live](https://spinfosecurity.github.io/ics-ot-advisories/)); portfolio `/advisories/` redirects there
 
 ## Publish (local as spinfosecurity)
 
