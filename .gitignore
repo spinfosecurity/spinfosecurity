@@ -15,3 +15,12 @@
 *.zip
 .DS_Store
 Thumbs.db
+
+# Never publish live scan artifacts or target lists
+*.xml
+*.gnmap
+*.nmap
+!docs/**/*.xml
+targets.txt
+*.targets
+lab-modbus-*

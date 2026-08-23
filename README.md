@@ -26,6 +26,10 @@ Defensive exposure-discovery tooling for authorized networks—Modbus, DNP3, BAC
 
 **Open to OT/ICS security and security automation roles.**
 
+## Guides
+
+- **[Nmap for ICS/OT — authorized exposure discovery](docs/nmap-ot-howto/README.md)** — slow, defensive discovery patterns; identity NSE; remediation-oriented reporting (no exploit payloads)
+
 ## Links
 
 - Portfolio: https://spinfosecurity.github.io
