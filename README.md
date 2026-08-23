@@ -28,7 +28,7 @@ Defensive exposure-discovery tooling for authorized networks—Modbus, DNP3, BAC
 
 ## Guides
 
-- **[Nmap for ICS/OT Security](https://github.com/spinfosecurity/nmap-ot-howto)** — employer-ready howto for authorized ICS/OT exposure discovery with Nmap ([mirror](docs/nmap-ot-howto/README.md) · [for employers](docs/nmap-ot-howto/FOR-EMPLOYERS.md))
+- **[Nmap for ICS/OT Security](https://github.com/spinfosecurity/nmap-ot-howto)** — authorized ICS/OT exposure discovery with Nmap ([mirror](docs/nmap-ot-howto/README.md) · [review map](docs/nmap-ot-howto/FOR-EMPLOYERS.md))
 
 ## Links
 

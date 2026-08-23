@@ -5,34 +5,31 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Nmap](https://img.shields.io/badge/Nmap-7.80%2B-blue.svg)](https://nmap.org/)
 [![ICS / OT](https://img.shields.io/badge/Focus-ICS%20%7C%20OT%20%7C%20SCADA-0c6f74.svg)](#about)
-[![Defensive](https://img.shields.io/badge/Posture-Defensive%20discovery-brightgreen.svg)](SAFE-USE.md)
+[![Defensive](https://img.shields.io/badge/Posture-Defensive%20discovery-0c6f74.svg)](SAFE-USE.md)
 [![No exploits](https://img.shields.io/badge/Exploits-None-lightgrey.svg)](SAFE-USE.md)
-[![Portfolio](https://img.shields.io/badge/Portfolio-spinfosecurity.github.io-0c6f74?style=flat-square)](https://spinfosecurity.github.io)
 
-**Hiring managers:** [5-minute review](FOR-EMPLOYERS.md) · **Flagship scanners:** [ICS OT Protector](https://github.com/spinfosecurity/ics-ot-protector) · **Portfolio:** [spinfosecurity.github.io](https://spinfosecurity.github.io)
+Guide to installing Nmap and using it for **authorized ICS/OT exposure discovery** — Modbus, EtherNet/IP, Siemens S7, DNP3, BACnet, IEC 104, and related protocols — with conservative timing, identity-oriented NSE, and remediation-focused reporting.
 
-A practical, open-source guide to **installing Nmap** and using it for **authorized ICS/OT exposure discovery** — Modbus, EtherNet/IP, Siemens S7, DNP3, BACnet, IEC 104, and related industrial protocols — with OT-safe timing, identity-oriented NSE, and remediation-ready reporting.
+[Portfolio](https://spinfosecurity.github.io) · [ICS OT Protector](https://github.com/spinfosecurity/ics-ot-protector) · [Review map](FOR-EMPLOYERS.md) · [Safe use](SAFE-USE.md)
+
+> **Authorized networks only.** Get written approval and an OT change window before you scan. Aggressive IT-style options can disrupt PLCs, RTUs, and HMIs.
 
 | | |
 |:--|:--|
-| **Audience** | OT/ICS security, security automation, and defensive assessment roles |
-| **Outcome** | Safe setup → slow discovery → protocol identity → hardening notes |
-| **Not included** | Exploit payloads, credential attacks, or DoS recipes against controllers |
-
-> **Authorized networks only.** Written approval and an OT change window come first. Aggressive IT-style scanning can disrupt PLCs, RTUs, and HMIs. See [SAFE-USE.md](SAFE-USE.md).
+| **For** | Defenders and assessors on authorized OT networks |
+| **Covers** | Install → slow discovery → protocol identity → report |
+| **Does not cover** | Exploits, credential attacks, or DoS against controllers |
 
 ---
 
 ## About
 
-Industrial networks still expose engineering protocols across flat or poorly segmented zones. This repository documents a **defensive Nmap methodology** aligned with how serious OT assessments should run:
+Engineering protocols often remain reachable across flat or poorly segmented industrial networks. This guide treats Nmap as a careful discovery tool:
 
-- Prefer **inventory and exposure** over vulnerability exploitation  
-- Use **slow timing** (`-T1` / rate limits) appropriate for fragile controllers  
-- Identify services with **discovery NSE** (not vuln/brute scripts)  
-- Hand findings to **segmentation, allowlisting, and CISA-oriented remediation**
-
-Keywords this guide covers: **ICS security**, **OT security**, **SCADA**, **Nmap**, **Modbus/TCP**, **EtherNet/IP**, **Siemens S7**, **DNP3**, **BACnet**, **IEC 60870-5-104**, **Niagara Fox**, **IEC 62443 / Purdue** zoning context, and **authorized defensive scanning**.
+- Inventory and exposure first — not vulnerability exploitation  
+- Slow timing and rate limits suited to fragile controllers  
+- Discovery / identity NSE instead of vuln or brute scripts  
+- Findings handed off as segmentation and hardening work  
 
 ---
 
@@ -465,7 +462,7 @@ OUTPUT    open = exposure to explain · not a free exploit
 | Resource | Link |
 |----------|------|
 | Sector OT/SCADA scanners | [ICS OT Protector](https://github.com/spinfosecurity/ics-ot-protector) |
-| Employer review guide | [FOR-EMPLOYERS.md](FOR-EMPLOYERS.md) |
+| Review map | [FOR-EMPLOYERS.md](FOR-EMPLOYERS.md) |
 | Portfolio | [spinfosecurity.github.io](https://spinfosecurity.github.io) |
 | Nmap download | [nmap.org/download](https://nmap.org/download.html) |
 | NSE reference | [nmap.org/nsedoc](https://nmap.org/nsedoc/) |
@@ -473,8 +470,6 @@ OUTPUT    open = exposure to explain · not a free exploit
 
 ---
 
-### Maintained by SpinfoSecurity
-
-Open to **OT/ICS security** and **security automation** roles. Public code stays defensive, reviewable, and free of exploit payloads.
-
 MIT License — [LICENSE](LICENSE)
+
+Maintained by [SpinfoSecurity](https://spinfosecurity.github.io).
