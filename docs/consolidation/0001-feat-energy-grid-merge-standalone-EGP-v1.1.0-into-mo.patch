@@ -1,0 +1,335 @@
+From f728117c76b582b0c4116b84c208ce97d422e9b7 Mon Sep 17 00:00:00 2001
+From: Cursor Agent <cursoragent@cursor.com>
+Date: Sun, 23 Aug 2026 12:36:49 +0000
+Subject: [PATCH] feat(energy-grid): merge standalone EGP v1.1.0 into monorepo
+
+Bring PROFINET RT/RTA and OPC UA port coverage, TcpClient disposal,
+and host:port finding deduplication from Energy-Grid-Protector into
+the unified ICS OT Protector config and scanners.
+---
+ CHANGELOG.md                             |  9 ++++++
+ README.md                                |  2 +-
+ config/sectors/energy-grid.json          | 20 +++++++++++-
+ config/sectors/energy-grid.yaml          | 14 ++++++++-
+ docs/sectors/energy-grid/threat-model.md |  2 +-
+ scanners/energy-grid/README.md           |  4 +--
+ scanners/energy-grid/bash/EGP.sh         | 19 +++++++----
+ scanners/energy-grid/powershell/EGP.ps1  | 40 +++++++++++++++---------
+ 8 files changed, 83 insertions(+), 27 deletions(-)
+
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index f5b9515..323780d 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -4,6 +4,15 @@ This project follows [Keep a Changelog](https://keepachangelog.com/) and intends
+ 
+ ## [Unreleased]
+ 
++## [4.1.2] - 2026-08-23
++
++### Added
++- **EGP v1.1.0 port coverage** — PROFINET RT/RTA (34962, 34963) and OPC UA (4840) merged from standalone Energy-Grid-Protector into `config/sectors/energy-grid.yaml`
++
++### Fixed
++- **EGP — finding deduplication** — host:port reported once across CVE, remote-access, and ICS checks (parity with standalone v1.1.0)
++- **EGP PowerShell — socket cleanup** — `Test-TcpPort` now disposes the `TcpClient` in a `finally` block (parity with standalone v1.1.0)
++
+ ## [4.1.1] - 2026-08-19
+ 
+ ### Added
+diff --git a/README.md b/README.md
+index 54681d2..b30249b 100644
+--- a/README.md
++++ b/README.md
+@@ -7,7 +7,7 @@ Previously distributed as four separate repositories, all scanners now live here
+ | Sector | Scanner | Status | Platforms |
+ |--------|---------|--------|-----------|
+ | Water & Wastewater | [WUP WUP](scanners/water/) | v3.4.0 — interactive, parallel scanning | PowerShell + Bash |
+-| Power Grid & Substation | [Energy Grid Protector (EGP)](scanners/energy-grid/) | v1.0.0 — CLI parameterized | PowerShell + Bash |
++| Power Grid & Substation | [Energy Grid Protector (EGP)](scanners/energy-grid/) | v1.1.0 — CLI parameterized | PowerShell + Bash |
+ | Building Automation (BAS) | [BAS Guardian](scanners/bas/) | v2.0.0 — interactive, vendor CVEs | PowerShell + Bash |
+ | Rail & Transit | [Rail-OT-Protector (ROP)](scanners/rail/) | v1.0.0 — CLI, JSON reports | PowerShell + Bash |
+ 
+diff --git a/config/sectors/energy-grid.json b/config/sectors/energy-grid.json
+index 17bf276..2163110 100644
+--- a/config/sectors/energy-grid.json
++++ b/config/sectors/energy-grid.json
+@@ -3,7 +3,7 @@
+   "metadata": {
+     "name": "Energy Grid Protector",
+     "short_name": "EGP",
+-    "version": "1.0.0",
++    "version": "1.1.0",
+     "reference": "CISA Alert AA26-097A | FBI PSA 2026-08-01"
+   },
+   "cve_checks": {
+@@ -137,6 +137,24 @@
+       "name": "EtherNet/IP-IO",
+       "severity": "MEDIUM",
+       "description": "EtherNet/IP implicit I/O port exposed. Should not be reachable from non-OT VLANs. Review network segmentation."
++    },
++    {
++      "port": 34962,
++      "name": "PROFINET-RT",
++      "severity": "HIGH",
++      "description": "PROFINET RT port exposed (IEC 61158). Restrict to PLC/drive management VLAN only."
++    },
++    {
++      "port": 34963,
++      "name": "PROFINET-RTA",
++      "severity": "HIGH",
++      "description": "PROFINET RTA port exposed (IEC 61158). Should not be reachable outside the automation cell."
++    },
++    {
++      "port": 4840,
++      "name": "OPC-UA",
++      "severity": "MEDIUM",
++      "description": "OPC UA port exposed. Verify certificate-based authentication is enforced. Restrict to authorized clients."
+     }
+   ]
+ }
+diff --git a/config/sectors/energy-grid.yaml b/config/sectors/energy-grid.yaml
+index 767b321..b3cb16d 100644
+--- a/config/sectors/energy-grid.yaml
++++ b/config/sectors/energy-grid.yaml
+@@ -2,7 +2,7 @@ sector: energy-grid
+ metadata:
+   name: Energy Grid Protector
+   short_name: EGP
+-  version: "1.0.0"
++  version: "1.1.0"
+   reference: CISA Alert AA26-097A | FBI PSA 2026-08-01
+ 
+ cve_checks:
+@@ -86,3 +86,15 @@ ics_ports:
+     name: EtherNet/IP-IO
+     severity: MEDIUM
+     description: "EtherNet/IP implicit I/O port exposed. Should not be reachable from non-OT VLANs. Review network segmentation."
++  - port: 34962
++    name: PROFINET-RT
++    severity: HIGH
++    description: "PROFINET RT port exposed (IEC 61158). Restrict to PLC/drive management VLAN only."
++  - port: 34963
++    name: PROFINET-RTA
++    severity: HIGH
++    description: "PROFINET RTA port exposed (IEC 61158). Should not be reachable outside the automation cell."
++  - port: 4840
++    name: OPC-UA
++    severity: MEDIUM
++    description: "OPC UA port exposed. Verify certificate-based authentication is enforced. Restrict to authorized clients."
+diff --git a/docs/sectors/energy-grid/threat-model.md b/docs/sectors/energy-grid/threat-model.md
+index 223e082..893cac2 100644
+--- a/docs/sectors/energy-grid/threat-model.md
++++ b/docs/sectors/energy-grid/threat-model.md
+@@ -4,7 +4,7 @@
+ 
+ ## Sector Objective
+ 
+-Identify named vendor CVE exposure candidates (Hitachi Energy, ABB, B&R), remote-access services, and grid ICS protocols (DNP3, Modbus, IEC 60870-5-104, IEC 61850, EtherNet/IP) on authorized /24 subnets.
++Identify named vendor CVE exposure candidates (Hitachi Energy, ABB, B&R), remote-access services, and grid ICS protocols (DNP3, Modbus, IEC 60870-5-104, IEC 61850, EtherNet/IP, PROFINET, OPC UA) on authorized /24 subnets.
+ 
+ ## Sector-Specific Considerations
+ 
+diff --git a/scanners/energy-grid/README.md b/scanners/energy-grid/README.md
+index e38325e..d71029f 100644
+--- a/scanners/energy-grid/README.md
++++ b/scanners/energy-grid/README.md
+@@ -24,7 +24,7 @@ Fast CVE-only mode:
+ | Category | Ports | Notes |
+ |----------|-------|-------|
+ | Remote Access | 3389, 5900, 22, 23, 21, 80, 443 | RDP, VNC, SSH, Telnet, FTP, HTTP/S |
+-| ICS Protocols | 502, 20000, 2404, 102, 44818 | Modbus, DNP3, IEC 60870-5-104, S7, EtherNet/IP |
++| ICS Protocols | 502, 20000, 2404, 102, 44818, 34962, 34963, 4840 | Modbus, DNP3, IEC 60870-5-104, S7, EtherNet/IP, PROFINET, OPC UA |
+ | Vendor CVEs | Hitachi Energy RTU500, ABB/B&R | Named CVE port checks |
+ 
+ ## Documentation
+@@ -35,4 +35,4 @@ Fast CVE-only mode:
+ 
+ ## Version
+ 
+-Current: **1.0.0** (CLI-driven, parameterized subnet input)
++Current: **1.1.0** (CLI-driven; PROFINET + OPC UA coverage)
+diff --git a/scanners/energy-grid/bash/EGP.sh b/scanners/energy-grid/bash/EGP.sh
+index dea991d..04a18b2 100755
+--- a/scanners/energy-grid/bash/EGP.sh
++++ b/scanners/energy-grid/bash/EGP.sh
+@@ -1,6 +1,6 @@
+ #!/usr/bin/env bash
+ # =============================================================================
+-# Energy Grid Protector (EGP) v1.0.0
++# Energy Grid Protector (EGP) v1.1.0
+ # OT/SCADA Cybersecurity Scanner - Power Grid Edition
+ # Author  : spinfosecurity
+ # License : MIT
+@@ -157,7 +157,7 @@ write_finding() {
+ show_banner() {
+     echo -e "${CYAN}"
+     echo "============================================================"
+-    echo "  Energy Grid Protector (EGP) v1.0.0"
++    echo "  Energy Grid Protector (EGP) v1.1.0"
+     echo "  OT/SCADA Cybersecurity Scanner - Power Grid Edition"
+     echo "  github.com/spinfosecurity/ics-ot-protector"
+     echo -e "  Ref: CISA AA26-097A | FBI PSA 2026-08-01${NC}"
+@@ -184,7 +184,7 @@ else
+ fi
+ 
+ EXTRA_META=$(jq -n \
+-  --arg version "1.0.0" \
++  --arg version "1.1.0" \
+   --arg scan_mode "$MODE_LABEL" \
+   --arg target "$SUBNET" \
+   --argjson timeout_ms $((TIMEOUT * 1000)) \
+@@ -206,6 +206,7 @@ PREFIX="${BASE_IP%.*}"
+ FINDINGS=0
+ HOSTS_SCANNED=0
+ TOTAL_HOSTS=254
++declare -A seen_findings
+ 
+ for i in $(seq 1 254); do
+     IP="${PREFIX}.${i}"
+@@ -221,7 +222,9 @@ for i in $(seq 1 254); do
+         IFS='|' read -r ports_str description severity remediation <<< "${cve_checks[$cve_id]}"
+         IFS=',' read -r -a port_list <<< "$ports_str"
+         for port in "${port_list[@]}"; do
+-            if test_tcp_port "$IP" "$port" "$TIMEOUT" 2>/dev/null; then
++            dedup_key="${IP}:${port}"
++            if [[ -z "${seen_findings[$dedup_key]+x}" ]] && test_tcp_port "$IP" "$port" "$TIMEOUT" 2>/dev/null; then
++                seen_findings[$dedup_key]=1
+                 echo ""
+                 write_finding "$IP" "$port" "$cve_id" "$severity" "$description" "$remediation"
+                 FINDINGS=$((FINDINGS + 1))
+@@ -233,7 +236,9 @@ for i in $(seq 1 254); do
+         # --- Remote Access Checks ---
+         for port in "${!remote_access_ports[@]}"; do
+             IFS='|' read -r name severity description <<< "${remote_access_ports[$port]}"
+-            if test_tcp_port "$IP" "$port" "$TIMEOUT" 2>/dev/null; then
++            dedup_key="${IP}:${port}"
++            if [[ -z "${seen_findings[$dedup_key]+x}" ]] && test_tcp_port "$IP" "$port" "$TIMEOUT" 2>/dev/null; then
++                seen_findings[$dedup_key]=1
+                 echo ""
+                 write_finding "$IP" "$port" "REMOTE-ACCESS:${name}" "$severity" "$description" "See docs/CISA-Reference.md"
+                 FINDINGS=$((FINDINGS + 1))
+@@ -243,7 +248,9 @@ for i in $(seq 1 254); do
+         # --- ICS Protocol Checks ---
+         for port in "${!ics_ports[@]}"; do
+             IFS='|' read -r name severity description <<< "${ics_ports[$port]}"
+-            if test_tcp_port "$IP" "$port" "$TIMEOUT" 2>/dev/null; then
++            dedup_key="${IP}:${port}"
++            if [[ -z "${seen_findings[$dedup_key]+x}" ]] && test_tcp_port "$IP" "$port" "$TIMEOUT" 2>/dev/null; then
++                seen_findings[$dedup_key]=1
+                 echo ""
+                 write_finding "$IP" "$port" "ICS-PROTOCOL:${name}" "$severity" "$description" "See docs/Threat-Intelligence.md"
+                 FINDINGS=$((FINDINGS + 1))
+diff --git a/scanners/energy-grid/powershell/EGP.ps1 b/scanners/energy-grid/powershell/EGP.ps1
+index 11bc854..b9e6971 100644
+--- a/scanners/energy-grid/powershell/EGP.ps1
++++ b/scanners/energy-grid/powershell/EGP.ps1
+@@ -7,7 +7,7 @@
+       - Named vendor CVEs (Hitachi Energy, ABB, B&R)
+       - Hitachi Energy RTU500 series vulnerability exposure
+       - Remote-access protocol exposure (RDP, VNC, SSH, Telnet, FTP, HTTP/HTTPS)
+-      - ICS protocol exposure (DNP3, Modbus, IEC 60870-5-104, IEC 61850, EtherNet/IP)
++      - ICS protocol exposure (DNP3, Modbus, IEC 60870-5-104, IEC 61850, EtherNet/IP, PROFINET, OPC UA)
+     Produces severity-tagged (CRITICAL/HIGH/MEDIUM) console output and a timestamped
+     JSON report saved to the reports/ directory.
+ 
+@@ -41,7 +41,7 @@
+ 
+ .NOTES
+     Author  : spinfosecurity
+-    Version : 1.0.0
++    Version : 1.1.0
+     License : MIT
+     Project : https://github.com/spinfosecurity/ics-ot-protector/tree/main/scanners/energy-grid
+ #>
+@@ -80,7 +80,7 @@ $script:ScanFindings = [System.Collections.Generic.List[pscustomobject]]::new()
+ function Show-Banner {
+     Write-Host ""
+     Write-Host "============================================================" -ForegroundColor Cyan
+-    Write-Host "  Energy Grid Protector (EGP) v1.0.0" -ForegroundColor Cyan
++    Write-Host "  Energy Grid Protector (EGP) v1.1.0" -ForegroundColor Cyan
+     Write-Host "  OT/SCADA Cybersecurity Scanner - Power Grid Edition" -ForegroundColor Cyan
+     Write-Host "  github.com/spinfosecurity/ics-ot-protector" -ForegroundColor Cyan
+     Write-Host "  Ref: CISA AA26-097A | FBI PSA 2026-08-01" -ForegroundColor DarkCyan
+@@ -99,17 +99,15 @@ function Test-TcpPort {
+         [int]$Port,
+         [int]$TimeoutMilliseconds
+     )
++    $client = [System.Net.Sockets.TcpClient]::new()
+     try {
+-        $client = [System.Net.Sockets.TcpClient]::new()
+-        $task   = $client.ConnectAsync($IpAddress, $Port)
+-        if ($task.Wait($TimeoutMilliseconds)) {
+-            $client.Close()
+-            return $true
+-        }
+-        $client.Close()
+-        return $false
++        $task = $client.ConnectAsync($IpAddress, $Port)
++        $connected = $task.Wait($TimeoutMilliseconds)
++        return $connected -and $client.Connected
+     } catch {
+         return $false
++    } finally {
++        $client.Dispose()
+     }
+ }
+ 
+@@ -190,6 +188,9 @@ $totalHosts   = $hosts.Count
+ $findings     = 0
+ $hostsScanned = 0
+ 
++# Deduplication set: tracks "IP:port" strings already reported
++$seenFindings = [System.Collections.Generic.HashSet[string]]::new()
++
+ foreach ($ip in $hosts) {
+     $hostsScanned++
+     $pct = [math]::Round(($hostsScanned / $totalHosts) * 100, 1)
+@@ -201,7 +202,10 @@ foreach ($ip in $hosts) {
+     foreach ($cveId in $CveChecks.Keys) {
+         $cve = $CveChecks[$cveId]
+         foreach ($port in $cve.Ports) {
+-            if (Test-TcpPort -IpAddress $ip -Port $port -TimeoutMilliseconds $TimeoutMs) {
++            $key = "${ip}:${port}"
++            if (-not $seenFindings.Contains($key) -and
++                (Test-TcpPort -IpAddress $ip -Port $port -TimeoutMilliseconds $TimeoutMs)) {
++                [void]$seenFindings.Add($key)
+                 Write-Finding `
+                     -IpAddress $ip -Port $port `
+                     -FindingLabel $cveId `
+@@ -216,7 +220,10 @@ foreach ($ip in $hosts) {
+     if (-not $CveOnly) {
+         # --- Remote Access Checks ---
+         foreach ($port in $RemoteAccessPorts.Keys) {
+-            if (Test-TcpPort -IpAddress $ip -Port $port -TimeoutMilliseconds $TimeoutMs) {
++            $key = "${ip}:${port}"
++            if (-not $seenFindings.Contains($key) -and
++                (Test-TcpPort -IpAddress $ip -Port $port -TimeoutMilliseconds $TimeoutMs)) {
++                [void]$seenFindings.Add($key)
+                 $ra = $RemoteAccessPorts[$port]
+                 Write-Finding `
+                     -IpAddress $ip -Port $port `
+@@ -230,7 +237,10 @@ foreach ($ip in $hosts) {
+ 
+         # --- ICS Protocol Checks ---
+         foreach ($port in $IcsPorts.Keys) {
+-            if (Test-TcpPort -IpAddress $ip -Port $port -TimeoutMilliseconds $TimeoutMs) {
++            $key = "${ip}:${port}"
++            if (-not $seenFindings.Contains($key) -and
++                (Test-TcpPort -IpAddress $ip -Port $port -TimeoutMilliseconds $TimeoutMs)) {
++                [void]$seenFindings.Add($key)
+                 $ics = $IcsPorts[$port]
+                 Write-Finding `
+                     -IpAddress $ip -Port $port `
+@@ -250,7 +260,7 @@ $exportPaths = Export-ScanReport -Findings @($script:ScanFindings) -OutputDir $O
+     -Metadata @{
+         sector     = 'energy-grid'
+         scanner    = 'Energy Grid Protector'
+-        version    = '1.0.0'
++        version    = '1.1.0'
+         scan_mode  = $modeLabel
+         target     = $Subnet
+         timeout_ms = $TimeoutMs
+-- 
+2.43.0
+
