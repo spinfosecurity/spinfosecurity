@@ -1,13 +1,11 @@
-# Safe use — Nmap on ICS/OT
+# Safe use
 
-Use the [howto](./README.md) only when all of the following are true:
+Use this guide only on **authorized** networks.
 
-1. You have **written authorization** covering targets, methods, and timing.
-2. An **OT process owner** is aware and reachable during the window.
-3. You have tested the same Nmap options in a **lab** first.
-4. You have an **abort plan** (stop scan, restore comms path, escalate).
-5. Findings go to **remediation / segmentation**, not exploitation.
+1. Written scope: targets, methods, rate limits, contacts  
+2. OT / process owner aware and reachable during the window  
+3. Abort if controllers fault, I/O drops, or operators report impact  
+4. Findings go to remediation and segmentation — not exploitation  
+5. Keep scan outputs and live target lists out of public repositories  
 
-Abort immediately if controllers show rising faults, lost I/O, or unexpected CPU/network alarms.
-
-Scan artifacts (`*.xml`, `*.gnmap`, `*.nmap`, target lists) stay out of public repositories.
+Do not scan systems you do not have permission to assess.

@@ -1,0 +1,9 @@
+# Scan artifacts — do not commit
+*.xml
+*.gnmap
+*.nmap
+ot-ports.*
+targets.txt
+*.targets
+.DS_Store
+Thumbs.db
