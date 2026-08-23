@@ -1,23 +1,38 @@
-# Nmap OT Howto
+# Nmap for ICS/OT Security
 
-**Set up Nmap. Scan ICS/OT safely. Turn open ports into hardening work.**
+### Authorized exposure discovery for industrial control systems and operational technology
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Nmap](https://img.shields.io/badge/Nmap-7.80%2B-blue.svg)](https://nmap.org/)
-[![Defensive](https://img.shields.io/badge/Posture-Defensive%20only-0c6f74.svg)](SAFE-USE.md)
+[![ICS / OT](https://img.shields.io/badge/Focus-ICS%20%7C%20OT%20%7C%20SCADA-0c6f74.svg)](#about)
+[![Defensive](https://img.shields.io/badge/Posture-Defensive%20discovery-brightgreen.svg)](SAFE-USE.md)
 [![No exploits](https://img.shields.io/badge/Exploits-None-lightgrey.svg)](SAFE-USE.md)
+[![Portfolio](https://img.shields.io/badge/Portfolio-spinfosecurity.github.io-0c6f74?style=flat-square)](https://spinfosecurity.github.io)
 
-<br>
+**Hiring managers:** [5-minute review](FOR-EMPLOYERS.md) · **Flagship scanners:** [ICS OT Protector](https://github.com/spinfosecurity/ics-ot-protector) · **Portfolio:** [spinfosecurity.github.io](https://spinfosecurity.github.io)
+
+A practical, open-source guide to **installing Nmap** and using it for **authorized ICS/OT exposure discovery** — Modbus, EtherNet/IP, Siemens S7, DNP3, BACnet, IEC 104, and related industrial protocols — with OT-safe timing, identity-oriented NSE, and remediation-ready reporting.
 
 | | |
 |:--|:--|
-| **Who this is for** | Defenders, OT engineers, and authorized assessors |
-| **What you get** | Install, OT-safe defaults, copy-paste scans, output reading, troubleshooting, reporting |
-| **What you won’t get** | Exploit payloads, credential attacks, or DoS recipes |
+| **Audience** | OT/ICS security, security automation, and defensive assessment roles |
+| **Outcome** | Safe setup → slow discovery → protocol identity → hardening notes |
+| **Not included** | Exploit payloads, credential attacks, or DoS recipes against controllers |
 
-> **Stop if you don’t have written authorization.** Live OT can fault under aggressive scans. Read [SAFE-USE.md](SAFE-USE.md) before Step 3.
+> **Authorized networks only.** Written approval and an OT change window come first. Aggressive IT-style scanning can disrupt PLCs, RTUs, and HMIs. See [SAFE-USE.md](SAFE-USE.md).
 
-Companion tooling: **[ICS OT Protector](https://github.com/spinfosecurity/ics-ot-protector)** · Portfolio: **[spinfosecurity.github.io](https://spinfosecurity.github.io)**
+---
+
+## About
+
+Industrial networks still expose engineering protocols across flat or poorly segmented zones. This repository documents a **defensive Nmap methodology** aligned with how serious OT assessments should run:
+
+- Prefer **inventory and exposure** over vulnerability exploitation  
+- Use **slow timing** (`-T1` / rate limits) appropriate for fragile controllers  
+- Identify services with **discovery NSE** (not vuln/brute scripts)  
+- Hand findings to **segmentation, allowlisting, and CISA-oriented remediation**
+
+Keywords this guide covers: **ICS security**, **OT security**, **SCADA**, **Nmap**, **Modbus/TCP**, **EtherNet/IP**, **Siemens S7**, **DNP3**, **BACnet**, **IEC 60870-5-104**, **Niagara Fox**, **IEC 62443 / Purdue** zoning context, and **authorized defensive scanning**.
 
 ---
 
@@ -449,12 +464,17 @@ OUTPUT    open = exposure to explain · not a free exploit
 
 | Resource | Link |
 |----------|------|
-| Sector scanners | [ICS OT Protector](https://github.com/spinfosecurity/ics-ot-protector) |
+| Sector OT/SCADA scanners | [ICS OT Protector](https://github.com/spinfosecurity/ics-ot-protector) |
+| Employer review guide | [FOR-EMPLOYERS.md](FOR-EMPLOYERS.md) |
 | Portfolio | [spinfosecurity.github.io](https://spinfosecurity.github.io) |
 | Nmap download | [nmap.org/download](https://nmap.org/download.html) |
 | NSE reference | [nmap.org/nsedoc](https://nmap.org/nsedoc/) |
 | Safety checklist | [SAFE-USE.md](SAFE-USE.md) |
 
 ---
+
+### Maintained by SpinfoSecurity
+
+Open to **OT/ICS security** and **security automation** roles. Public code stays defensive, reviewable, and free of exploit payloads.
 
 MIT License — [LICENSE](LICENSE)
