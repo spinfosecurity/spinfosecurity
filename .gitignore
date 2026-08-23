@@ -15,3 +15,6 @@
 *.zip
 .DS_Store
 Thumbs.db
+
+# Standalone project — published as spinfosecurity/ics-ot-advisories
+ics-ot-advisories/
