@@ -24,17 +24,18 @@ Companion tooling: **[ICS OT Protector](https://github.com/spinfosecurity/ics-ot
 ## Contents
 
 1. [Start here](#1-start-here)
-2. [Install Nmap](#2-install-nmap)
-3. [Pre-scan checklist](#3-pre-scan-checklist)
-4. [Scan workflow](#4-scan-workflow)
-5. [Protocol commands](#5-protocol-commands)
-6. [Port cheat sheet](#6-port-cheat-sheet)
-7. [Report findings](#7-report-findings)
-8. [Read your output](#8-read-your-output)
-9. [Troubleshooting](#9-troubleshooting)
-10. [Nmap vs ICS OT Protector](#10-nmap-vs-ics-ot-protector)
-11. [Quick card](#11-quick-card)
-12. [Scope](#12-scope)
+2. [First engagement walkthrough](#2-first-engagement-walkthrough)
+3. [Install Nmap](#3-install-nmap)
+4. [Pre-scan checklist](#4-pre-scan-checklist)
+5. [Scan workflow](#5-scan-workflow)
+6. [Protocol commands](#6-protocol-commands)
+7. [Port cheat sheet](#7-port-cheat-sheet)
+8. [Report findings](#8-report-findings)
+9. [Read your output](#9-read-your-output)
+10. [Troubleshooting](#10-troubleshooting)
+11. [Nmap vs ICS OT Protector](#11-nmap-vs-ics-ot-protector)
+12. [Quick card](#12-quick-card)
+13. [Scope](#13-scope)
 
 ---
 
@@ -51,16 +52,115 @@ flowchart LR
 
 | Step | You do | Time sense |
 |------|--------|------------|
-| **2** | Install and verify Nmap | Once per workstation |
-| **3** | Complete the checklist | Every engagement |
-| **4** | Run discovery → ports → NSE | Slow on purpose |
-| **7** | Write exposure → action | Per finding |
+| **3** | Install and verify Nmap | Once per workstation |
+| **4** | Complete the checklist | Every engagement |
+| **5** | Run discovery → ports → NSE | Slow on purpose |
+| **8** | Write exposure → action | Per finding |
 
 Replace `<target>` everywhere with a host or CIDR from your **signed scope**.
 
 ---
 
-## 2. Install Nmap
+## 2. First engagement walkthrough
+
+**Example only** — these IPs are fake. Do not scan them on the public internet. Use your authorized scope instead.
+
+| Field | Example value |
+|-------|----------------|
+| Engagement | `OT-ENG-2026-081` |
+| Authorized CIDR | `10.255.10.0/24` (engineering OT VLAN) |
+| Exclude | `10.255.10.1` (firewall) |
+| Max rate | `30` packets/sec · `-T1` · `--scan-delay 200ms` |
+| OT owner | On call for the window |
+
+Assumed inventory (what the plant thinks is there):
+
+| IP | Role |
+|----|------|
+| `10.255.10.10` | Engineering workstation |
+| `10.255.10.20` | Modbus PLC |
+| `10.255.10.30` | EtherNet/IP drive |
+
+### Minute 0 — Confirm setup
+
+```bash
+nmap --version
+nmap --script-help modbus-discover enip-info
+```
+
+### Minute 5 — Host discovery
+
+```bash
+nmap -sn -T2 --max-retries 1 --exclude 10.255.10.1 10.255.10.0/24
+```
+
+Example result (illustrative):
+
+```text
+Nmap scan report for 10.255.10.10
+Nmap scan report for 10.255.10.20
+Nmap scan report for 10.255.10.30
+```
+
+If this returns nothing, skip ping and use `-Pn` below.
+
+### Minute 15 — ICS port pass
+
+```bash
+nmap -sT -Pn -T1 --scan-delay 200ms --max-rate 30 \
+  --exclude 10.255.10.1 \
+  -p 102,502,2404,20000,44818,47808,1911,4911,2222,2455,9600 \
+  -oA ot-ports \
+  10.255.10.0/24
+```
+
+Example reading of `ot-ports.nmap`:
+
+```text
+Nmap scan report for 10.255.10.20
+PORT      STATE  SERVICE
+502/tcp   open   modbus
+44818/tcp closed EtherNetIP-2
+
+Nmap scan report for 10.255.10.30
+PORT      STATE SERVICE
+502/tcp   closed modbus
+44818/tcp open   EtherNetIP-2
+```
+
+### Minute 25 — Identify (one protocol each)
+
+```bash
+# Only because 502 was open on .20
+nmap -sT -Pn -T1 --scan-delay 200ms -p 502 \
+  --script modbus-discover 10.255.10.20
+
+# Only because 44818 was open on .30
+nmap -sT -Pn -T1 --scan-delay 200ms -p 44818 \
+  --script enip-info 10.255.10.30
+```
+
+### Minute 35 — Write two findings
+
+```text
+Engagement: OT-ENG-2026-081     Window: 2026-08-23 14:00-16:00Z     Auth: CHG-4412
+Scope: 10.255.10.0/24  exclude 10.255.10.1
+Method: Nmap -sT -T1 · ICS ports · modbus-discover · enip-info
+
+Findings:
+  - 10.255.10.20:502  protocol=Modbus/TCP  zone=L2  expected=y
+    action: keep allowlisted from eng VLAN only; monitor for new sources
+  - 10.255.10.30:44818  protocol=EtherNet/IP  zone=L2  expected=y
+    action: confirm no path from enterprise; document owner
+
+Incidents during scan: none
+```
+
+That’s a complete first pass: authorize → discover → ports → identity → report.
+
+---
+
+## 3. Install Nmap
 
 Pick your OS. When finished you should see a version string from `nmap --version`.
 
@@ -118,7 +218,7 @@ nmap --script-help 'modbus-discover,enip-info,bacnet-info,s7-info,omron-info,fox
 
 ---
 
-## 3. Pre-scan checklist
+## 4. Pre-scan checklist
 
 Complete every box before touching production OT.
 
@@ -141,7 +241,7 @@ Complete every box before touching production OT.
 
 ---
 
-## 4. Scan workflow
+## 5. Scan workflow
 
 Three passes. Stay slow. One purpose per command.
 
@@ -172,13 +272,13 @@ nmap -sT -Pn -T1 --scan-delay 200ms --max-rate 30 \
 ### C — Identify the open protocol
 
 Only run NSE against hosts that showed the matching port in step B.  
-Use the [protocol command table](#5-protocol-commands) below — **one protocol at a time**.
+Use the [protocol command table](#6-protocol-commands) below — **one protocol at a time**.
 
 > **Tip:** If an NSE description mentions privilege gain, brute force, or DoS, skip it on production controllers. Identity / discovery only.
 
 ---
 
-## 5. Protocol commands
+## 6. Protocol commands
 
 Shared slow prefix (copy once, swap port + script):
 
@@ -205,7 +305,7 @@ nmap -sT -Pn -T1 --scan-delay 200ms -p <PORT> --script <SCRIPT> <target>
 
 ---
 
-## 6. Port cheat sheet
+## 7. Port cheat sheet
 
 | Port | Typical service | Transport |
 |------|-----------------|-----------|
@@ -224,7 +324,7 @@ nmap -sT -Pn -T1 --scan-delay 200ms -p <PORT> --script <SCRIPT> <target>
 
 ---
 
-## 7. Report findings
+## 8. Report findings
 
 Capture four fields per service:
 
@@ -253,7 +353,7 @@ Prefer CISA ICS advisories and network controls over chasing exploit PoCs on liv
 
 ---
 
-## 8. Read your output
+## 9. Read your output
 
 `-oA ot-ports` writes three files. Use them like this:
 
@@ -290,7 +390,7 @@ grep 'Ports:' ot-ports.gnmap | grep -i open
 
 ---
 
-## 9. Troubleshooting
+## 10. Troubleshooting
 
 | Symptom | Likely cause | What to try |
 |---------|--------------|-------------|
@@ -304,7 +404,7 @@ grep 'Ports:' ot-ports.gnmap | grep -i open
 
 ---
 
-## 10. Nmap vs ICS OT Protector
+## 11. Nmap vs ICS OT Protector
 
 | Need | Use |
 |------|-----|
@@ -317,7 +417,7 @@ They complement each other: Protector for repeatable sector coverage; this guide
 
 ---
 
-## 11. Quick card
+## 12. Quick card
 
 Print or pin this for the engagement window.
 
@@ -333,7 +433,7 @@ OUTPUT    open = exposure to explain · not a free exploit
 
 ---
 
-## 12. Scope
+## 13. Scope
 
 | In this guide | Not in this guide |
 |---------------|-------------------|
