@@ -2,17 +2,15 @@
 
 Defensive **OT/ICS** cybersecurity automation in **PowerShell** and **Bash**.
 
-Portfolio site: **[spinfosecurity.github.io](https://spinfosecurity.github.io/)**
+Portfolio: **[spinfosecurity.github.io](https://spinfosecurity.github.io/)** · Open to **OT/ICS cybersecurity** and **security automation** roles.
 
-I build practical tools for authorized security assessment, exposure discovery, and analyst-ready reporting.
+I build practical tools for authorized exposure discovery and analyst-ready reporting—TCP reachability checks only, not exploit frameworks.
 
 ## Featured project
 
-| Project | Use case |
+| Project | What it is |
 |---|---|
-| [ICS OT Protector](https://github.com/spinfosecurity/ics-ot-protector) | Unified critical-infrastructure OT/SCADA scanners for water, energy, building automation (BAS), and rail — PowerShell + Bash, shared config/CI, JSON reports |
-
-Sector entry points:
+| [ICS OT Protector](https://github.com/spinfosecurity/ics-ot-protector) | Unified critical-infrastructure OT/SCADA scanners for water, energy, building automation (BAS), and rail — PowerShell + Bash, shared config/CI, severity-ranked JSON reports |
 
 | Sector | Path |
 |---|---|
@@ -21,20 +19,16 @@ Sector entry points:
 | Building automation / BACnet | [`scanners/bas/`](https://github.com/spinfosecurity/ics-ot-protector/tree/main/scanners/bas) |
 | Rail & transit | [`scanners/rail/`](https://github.com/spinfosecurity/ics-ot-protector/tree/main/scanners/rail) |
 
-Standalone `BAS-Guardian`, `Energy-Grid-Protector`, and `Rail-OT-Protector` repos are archived and point here.
+## What this demonstrates
 
-## Core capabilities
+- PowerShell and Bash automation for security operations workflows
+- OT/ICS exposure discovery concepts (remote access + sector protocol ports)
+- Structured JSON reporting for triage with IT/OT stakeholders
+- Documentation, safe-operation guidance, and GitHub Actions checks
 
-- PowerShell automation for Windows diagnostics and security operations
-- OT/ICS exposure discovery and critical-infrastructure security workflows
-- Network service and protocol visibility for authorized assessments
-- JSON reporting for incident triage and ticketing
-- GitHub Actions linting, syntax validation, and non-networked tests
+## Accurate scope
 
-## How I build
+**Does:** authorized subnet TCP reachability checks, severity labels, CISA-oriented remediation pointers.  
+**Does not:** credential testing, exploit payloads, config changes, or replace a penetration test.
 
-- **Defensive by design:** explicit authorization-only scope
-- **Operationally aware:** safety guidance and documented limitations
-- **Evidence-focused:** findings built for engineering and security triage
-
-**Authorized defensive use only.** These projects are not exploit frameworks and must never be used without explicit asset-owner permission.
+**Authorized defensive use only.** Never run these tools without explicit asset-owner permission.
