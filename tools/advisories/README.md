@@ -23,5 +23,7 @@ Outputs (under `docs/job-hunting-site/advisories/`):
 
 ## Schedule
 
-`.github/workflows/update-advisories.yml` runs daily, regenerates outputs, and
-commits when the advisory set changes.
+`.github/workflows/update-advisories.yml` runs **once per week** (Monday),
+regenerates outputs, and commits only when the advisory set changes. Manual runs
+use **workflow_dispatch**. The aggregator also rate-limits outbound fetches so we
+do not hammer GitHub’s raw content CDN.

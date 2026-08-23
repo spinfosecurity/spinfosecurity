@@ -20,12 +20,17 @@ import html
 import json
 import re
 import sys
+import threading
+import time
 import urllib.error
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 from xml.sax.saxutils import escape as xml_escape
+
+_FETCH_LOCK = threading.Lock()
+_LAST_FETCH_AT = 0.0
 
 FEED_URL = (
     "https://raw.githubusercontent.com/cisagov/CSAF/develop/"
@@ -35,8 +40,9 @@ USER_AGENT = "SpinfoSecurity-Advisories/1.0 (+https://spinfosecurity.github.io/a
 SITE_ORIGIN = "https://spinfosecurity.github.io"
 PAGE_PATH = "/advisories/"
 DEFAULT_LIMIT = 120
-MAX_WORKERS = 12
+MAX_WORKERS = 2
 REQUEST_TIMEOUT = 45
+REQUEST_GAP_SECONDS = 0.35
 
 SEVERITY_RANK = {
     "CRITICAL": 4,
@@ -49,15 +55,24 @@ SEVERITY_RANK = {
 
 
 def fetch_json(url: str) -> Any:
-    req = urllib.request.Request(
-        url,
-        headers={
-            "User-Agent": USER_AGENT,
-            "Accept": "application/json",
-        },
-    )
-    with urllib.request.urlopen(req, timeout=REQUEST_TIMEOUT) as resp:
-        return json.load(resp)
+    """Fetch JSON with a small global gap between requests (be polite to GitHub)."""
+    global _LAST_FETCH_AT
+    with _FETCH_LOCK:
+        now = time.monotonic()
+        wait = REQUEST_GAP_SECONDS - (now - _LAST_FETCH_AT)
+        if wait > 0:
+            time.sleep(wait)
+        req = urllib.request.Request(
+            url,
+            headers={
+                "User-Agent": USER_AGENT,
+                "Accept": "application/json",
+            },
+        )
+        with urllib.request.urlopen(req, timeout=REQUEST_TIMEOUT) as resp:
+            payload = json.load(resp)
+        _LAST_FETCH_AT = time.monotonic()
+        return payload
 
 
 def walk_products(branches: list[dict[str, Any]] | None) -> tuple[list[str], list[str]]:

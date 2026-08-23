@@ -2,14 +2,9 @@ name: Update ICS/OT advisories
 
 on:
   schedule:
-    # Daily 13:30 UTC — after typical CISA morning publication window
-    - cron: "30 13 * * *"
+    # Weekly Monday 14:00 UTC — low-frequency to stay polite to GitHub/CISA mirrors
+    - cron: "0 14 * * 1"
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - "tools/advisories/**"
-      - ".github/workflows/update-advisories.yml"
 
 permissions:
   contents: write
