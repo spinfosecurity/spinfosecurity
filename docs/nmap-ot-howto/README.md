@@ -12,7 +12,7 @@
 | | |
 |:--|:--|
 | **Who this is for** | Defenders, OT engineers, and authorized assessors |
-| **What you get** | Install steps, OT-safe defaults, copy-paste scan commands, reporting template |
+| **What you get** | Install, OT-safe defaults, copy-paste scans, output reading, troubleshooting, reporting |
 | **What you won’t get** | Exploit payloads, credential attacks, or DoS recipes |
 
 > **Stop if you don’t have written authorization.** Live OT can fault under aggressive scans. Read [SAFE-USE.md](SAFE-USE.md) before Step 3.
@@ -30,7 +30,11 @@ Companion tooling: **[ICS OT Protector](https://github.com/spinfosecurity/ics-ot
 5. [Protocol commands](#5-protocol-commands)
 6. [Port cheat sheet](#6-port-cheat-sheet)
 7. [Report findings](#7-report-findings)
-8. [Scope](#8-scope)
+8. [Read your output](#8-read-your-output)
+9. [Troubleshooting](#9-troubleshooting)
+10. [Nmap vs ICS OT Protector](#10-nmap-vs-ics-ot-protector)
+11. [Quick card](#11-quick-card)
+12. [Scope](#12-scope)
 
 ---
 
@@ -249,14 +253,95 @@ Prefer CISA ICS advisories and network controls over chasing exploit PoCs on liv
 
 ---
 
-## 8. Scope
+## 8. Read your output
+
+`-oA ot-ports` writes three files. Use them like this:
+
+| File | Best for |
+|------|----------|
+| `ot-ports.nmap` | Human review (what you read first) |
+| `ot-ports.gnmap` | Grep / spreadsheet import (`Host:`, `Ports:`) |
+| `ot-ports.xml` | Archival / tooling — keep offline, don’t publish |
+
+### What “useful” looks like (sanitized)
+
+```text
+Nmap scan report for 10.20.30.40
+Host is up (0.012s latency).
+
+PORT      STATE SERVICE
+102/tcp   open  iso-tsap
+502/tcp   open  modbus
+44818/tcp open  EtherNetIP-2
+20000/tcp closed dnp
+```
+
+| You see | Meaning | Next move |
+|---------|---------|-----------|
+| `open` on an ICS port | Reachable from your scan source | Run the matching identity NSE (Step 5); ask if that conduit should exist |
+| `closed` | Host answered; service not listening | Usually fine — note if inventory expected it open |
+| `filtered` | No useful reply (ACL / firewall / silent drop) | Don’t crank timing — document as blocked or unknown |
+| NSE vendor / model lines | Device identity hint | Record under **Asset**; map to zone + owner |
+
+```bash
+# Pull open ports out of greppable output
+grep 'Ports:' ot-ports.gnmap | grep -i open
+```
+
+---
+
+## 9. Troubleshooting
+
+| Symptom | Likely cause | What to try |
+|---------|--------------|-------------|
+| Host discovery finds nothing | ICMP filtered | Skip `-sn`; use `-Pn` on the port scan |
+| Everything `filtered` | Firewall / wrong VLAN / no route | Confirm you’re on the authorized OT path; don’t raise `-T` |
+| `Permission denied` / raw socket errors | Needs privileges for some scan types | Prefer `-sT` (no root on many Linux setups); on Windows reinstall Npcap |
+| NSE script “did not match” | Old Nmap build | Upgrade Nmap; re-run `--script-help` |
+| Scan takes forever | Large CIDR + `-T1` | Shrink scope; raise delay only after OT owner agrees — never jump to `-T4` on live OT |
+| UDP BACnet always empty | UDP is lossy / filtered | Keep `--scan-delay`; accept more `open\|filtered` ambiguity than TCP |
+| Process alarms during scan | Too aggressive or fragile device | **Abort**; document; resume only with slower rate after owner approval |
+
+---
+
+## 10. Nmap vs ICS OT Protector
+
+| Need | Use |
+|------|-----|
+| Learn / teach OT-safe Nmap flags and NSE identity | **This howto** |
+| One-off authorized discovery with full control of Nmap options | **Nmap** (commands above) |
+| Sector port catalogs + CISA-oriented remediation notes (water, energy, BAS, rail) | **[ICS OT Protector](https://github.com/spinfosecurity/ics-ot-protector)** |
+| TCP reachability checks without hand-writing Nmap each time | **ICS OT Protector** scan mode |
+
+They complement each other: Protector for repeatable sector coverage; this guide for understanding and tuning Nmap itself.
+
+---
+
+## 11. Quick card
+
+Print or pin this for the engagement window.
+
+```text
+AUTH      written scope + OT owner on call
+TIMING    -sT -Pn -T1 --scan-delay 200ms --max-rate 30
+PORTS     102,502,2404,20000,44818,47808,1911,4911,2222,2455,9600
+SAVE      -oA ot-ports
+NSE       one protocol at a time · identity only
+ABORT     faults / lost I/O / operator impact → stop
+OUTPUT    open = exposure to explain · not a free exploit
+```
+
+---
+
+## 12. Scope
 
 | In this guide | Not in this guide |
 |---------------|-------------------|
 | Install + verify Nmap | Exploit development |
 | OT-safe timing / rate limits | DoS against controllers |
 | Identity-oriented NSE | Credential attacks |
-| Exposure → remediation notes | Scanning without permission |
+| Output reading + troubleshooting | Scanning without permission |
+| Exposure → remediation notes | Publishing live target lists |
 
 ---
 
