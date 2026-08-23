@@ -16,5 +16,13 @@
 .DS_Store
 Thumbs.db
 
+# Never publish live scan artifacts or target lists
+*.xml
+*.gnmap
+*.nmap
+targets.txt
+*.targets
+lab-modbus-*
+
 # Standalone project — published as spinfosecurity/ics-ot-advisories
 ics-ot-advisories/
