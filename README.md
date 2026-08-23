@@ -29,5 +29,6 @@ Defensive exposure-discovery tooling for authorized networks—Modbus, DNP3, BAC
 ## Links
 
 - Portfolio: https://spinfosecurity.github.io
+- ICS/OT Advisories: https://spinfosecurity.github.io/advisories/
 - Documentation: https://github.com/spinfosecurity/ics-ot-protector
 - Releases: https://github.com/spinfosecurity/ics-ot-protector/releases
