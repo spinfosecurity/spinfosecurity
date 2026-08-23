@@ -1,34 +1,33 @@
 # SpinfoSecurity
 
-Defensive **OT/ICS** cybersecurity automation in **PowerShell** and **Bash**.
+**OT/ICS cybersecurity automation — open source, defensive, reviewable in public code.**
 
-Portfolio: **[spinfosecurity.github.io](https://spinfosecurity.github.io/)** · Open to **OT/ICS cybersecurity** and **security automation** roles.
+[![Portfolio site](https://img.shields.io/badge/Portfolio-spinfosecurity.github.io-0c6f74?style=flat-square)](https://spinfosecurity.github.io)
+[![ICS OT Protector](https://img.shields.io/badge/Flagship-ICS%20OT%20Protector-blue?style=flat-square)](https://github.com/spinfosecurity/ics-ot-protector)
 
-I build practical tools for authorized exposure discovery and analyst-ready reporting—TCP reachability checks only, not exploit frameworks.
+## Flagship project
 
-## Featured project
+**[ICS OT Protector](https://github.com/spinfosecurity/ics-ot-protector)** — unified OT/SCADA exposure scanners for critical infrastructure:
 
-| Project | What it is |
-|---|---|
-| [ICS OT Protector](https://github.com/spinfosecurity/ics-ot-protector) | Unified critical-infrastructure OT/SCADA scanners for water, energy, building automation (BAS), and rail — PowerShell + Bash, shared config/CI, severity-ranked JSON reports |
+| Sector | Scanner |
+|--------|---------|
+| Water & wastewater | WUP WUP |
+| Power grid & substation | Energy Grid Protector |
+| Building automation | BAS Guardian |
+| Rail & transit | Rail-OT-Protector |
 
-| Sector | Path |
-|---|---|
-| Water & wastewater | [`scanners/water/`](https://github.com/spinfosecurity/ics-ot-protector/tree/main/scanners/water) |
-| Power grid & substation | [`scanners/energy-grid/`](https://github.com/spinfosecurity/ics-ot-protector/tree/main/scanners/energy-grid) |
-| Building automation / BACnet | [`scanners/bas/`](https://github.com/spinfosecurity/ics-ot-protector/tree/main/scanners/bas) |
-| Rail & transit | [`scanners/rail/`](https://github.com/spinfosecurity/ics-ot-protector/tree/main/scanners/rail) |
+PowerShell + Bash · MIT license · TCP reachability only (no exploit payloads)
 
-## What this demonstrates
+**Hiring managers:** [5-minute review guide](https://github.com/spinfosecurity/ics-ot-protector/blob/main/docs/for-employers.md) · [Portfolio](https://spinfosecurity.github.io)
 
-- PowerShell and Bash automation for security operations workflows
-- OT/ICS exposure discovery concepts (remote access + sector protocol ports)
-- Structured JSON reporting for triage with IT/OT stakeholders
-- Documentation, safe-operation guidance, and GitHub Actions checks
+## About
 
-## Accurate scope
+Defensive exposure-discovery tooling for authorized networks—Modbus, DNP3, BACnet, remote access, and sector-specific port catalogs with CISA-oriented remediation notes.
 
-**Does:** authorized subnet TCP reachability checks, severity labels, CISA-oriented remediation pointers.  
-**Does not:** credential testing, exploit payloads, config changes, or replace a penetration test.
+**Open to OT/ICS security and security automation roles.**
 
-**Authorized defensive use only.** Never run these tools without explicit asset-owner permission.
+## Links
+
+- Portfolio: https://spinfosecurity.github.io
+- Documentation: https://github.com/spinfosecurity/ics-ot-protector
+- Releases: https://github.com/spinfosecurity/ics-ot-protector/releases
