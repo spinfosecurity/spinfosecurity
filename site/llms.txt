@@ -1,0 +1,19 @@
+# SpinfoSecurity ICS/OT Advisories
+
+> Aggregated CISA industrial control (ICSA) and medical device (ICSMA) advisories for OT/ICS equipment maintainers.
+
+This site is generated from the official CISA CSAF OT feed. Always verify remediation details on the linked CISA advisory page.
+
+## Primary pages
+
+- [Advisories triage UI](https://spinfosecurity.github.io/ics-ot-advisories/): searchable list with severity filters
+- [RSS feed](https://spinfosecurity.github.io/ics-ot-advisories/feed.xml): machine subscribe
+- [JSON snapshot](https://spinfosecurity.github.io/ics-ot-advisories/advisories.json): structured recent advisories
+- [Source repository](https://github.com/spinfosecurity/ics-ot-advisories): aggregator code and docs
+- [Portfolio](https://spinfosecurity.github.io/): SpinfoSecurity OT/ICS defensive tooling
+- [Attribution](https://github.com/spinfosecurity/ics-ot-advisories/blob/main/ATTRIBUTION.md): source and limits
+
+## Optional
+
+- [FOR-EMPLOYERS.md](https://github.com/spinfosecurity/ics-ot-advisories/blob/main/FOR-EMPLOYERS.md): hiring-manager review map
+- [ICS OT Protector](https://github.com/spinfosecurity/ics-ot-protector): companion exposure scanners

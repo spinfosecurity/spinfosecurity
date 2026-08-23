@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://spinfosecurity.github.io/ics-ot-advisories/sitemap.xml
+
+# Project context for agents:
+# https://spinfosecurity.github.io/ics-ot-advisories/llms.txt

@@ -1,0 +1,5 @@
+Contact: https://github.com/spinfosecurity/ics-ot-advisories/security/advisories/new
+Expires: 2027-08-23T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://spinfosecurity.github.io/ics-ot-advisories/.well-known/security.txt
+Policy: https://github.com/spinfosecurity/ics-ot-advisories/blob/main/ATTRIBUTION.md
