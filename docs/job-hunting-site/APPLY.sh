@@ -19,8 +19,9 @@ git checkout -b "$BRANCH"
 
 cp "$ROOT/index.html" "$ROOT/styles.css" "$ROOT/404.html" "$ROOT/favicon.svg" "$ROOT/robots.txt" "$ROOT/sitemap.xml" .
 cp "$ROOT/.nojekyll" . 2>/dev/null || touch .nojekyll
-mkdir -p projects/ics-ot-protector
+mkdir -p projects/ics-ot-protector projects/nmap-ot-howto
 cp "$ROOT/projects/ics-ot-protector/index.html" projects/ics-ot-protector/index.html
+cp "$ROOT/projects/nmap-ot-howto/index.html" projects/nmap-ot-howto/index.html
 for slug in water-utility-protector bas-guardian energy-grid-protector rail-ot-protector; do
   mkdir -p "projects/$slug"
   cp "$ROOT/projects/$slug/index.html" "projects/$slug/index.html"
