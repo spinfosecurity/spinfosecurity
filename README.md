@@ -10,18 +10,18 @@ I build practical tools for authorized security assessment, exposure discovery, 
 
 | Project | Use case |
 |---|---|
-| [ICS OT Protector](https://github.com/spinfosecurity/water-utility-protector) | Unified critical-infrastructure OT/SCADA scanners for water, energy, building automation (BAS), and rail — PowerShell + Bash, shared config/CI, JSON reports |
+| [ICS OT Protector](https://github.com/spinfosecurity/ics-ot-protector) | Unified critical-infrastructure OT/SCADA scanners for water, energy, building automation (BAS), and rail — PowerShell + Bash, shared config/CI, JSON reports |
 
-Sector entry points inside that monorepo:
+Sector entry points:
 
 | Sector | Path |
 |---|---|
-| Water & wastewater | [`scanners/water/`](https://github.com/spinfosecurity/water-utility-protector/tree/main/scanners/water) |
-| Power grid & substation | [`scanners/energy-grid/`](https://github.com/spinfosecurity/water-utility-protector/tree/main/scanners/energy-grid) |
-| Building automation / BACnet | [`scanners/bas/`](https://github.com/spinfosecurity/water-utility-protector/tree/main/scanners/bas) |
-| Rail & transit | [`scanners/rail/`](https://github.com/spinfosecurity/water-utility-protector/tree/main/scanners/rail) |
+| Water & wastewater | [`scanners/water/`](https://github.com/spinfosecurity/ics-ot-protector/tree/main/scanners/water) |
+| Power grid & substation | [`scanners/energy-grid/`](https://github.com/spinfosecurity/ics-ot-protector/tree/main/scanners/energy-grid) |
+| Building automation / BACnet | [`scanners/bas/`](https://github.com/spinfosecurity/ics-ot-protector/tree/main/scanners/bas) |
+| Rail & transit | [`scanners/rail/`](https://github.com/spinfosecurity/ics-ot-protector/tree/main/scanners/rail) |
 
-> **Repo rename in progress:** the monorepo will become `spinfosecurity/ics-ot-protector`. GitHub will redirect the current `water-utility-protector` URL after rename. Standalone `BAS-Guardian`, `Energy-Grid-Protector`, and `Rail-OT-Protector` repos are being archived with pointers to the monorepo.
+Standalone `BAS-Guardian`, `Energy-Grid-Protector`, and `Rail-OT-Protector` repos are archived and point here.
 
 ## Core capabilities
 
