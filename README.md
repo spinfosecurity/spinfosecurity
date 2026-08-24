@@ -18,7 +18,7 @@
 
 PowerShell + Bash · MIT license · TCP reachability only (no exploit payloads)
 
-**Hiring managers:** [5-minute review guide](https://github.com/spinfosecurity/ics-ot-protector/blob/main/docs/for-employers.md) · [Portfolio](https://spinfosecurity.github.io)
+**Quick review:** [5-minute review guide](https://github.com/spinfosecurity/ics-ot-protector/blob/main/docs/for-employers.md) · [Portfolio](https://spinfosecurity.github.io)
 
 ## About
 
