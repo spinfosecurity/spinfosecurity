@@ -1,6 +1,6 @@
 # SpinfoSecurity
 
-**IT automation, network troubleshooting, and security hygiene — open source, reviewable in public code.**
+**Hands-on IT automation — PowerShell, Bash, network troubleshooting, and docs you can verify in public code.**
 
 [![Portfolio site](https://img.shields.io/badge/Portfolio-spinfosecurity.github.io-0c6f74?style=flat-square)](https://spinfosecurity.github.io)
 [![ICS OT Protector](https://img.shields.io/badge/Flagship-ICS%20OT%20Protector-blue?style=flat-square)](https://github.com/spinfosecurity/ics-ot-protector)

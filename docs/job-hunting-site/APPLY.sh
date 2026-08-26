@@ -32,10 +32,10 @@ done
 
 git add -A
 git commit -m "$(cat <<'MSG'
-Polish portfolio UX and feature ICS/OT Advisories
+Refresh portfolio UX for IT services screens
 
-Brand-first hero, clearer human copy, dedicated advisories section,
-and synced CSS so the live site stays professional and readable.
+Aerospace-ops visual system, tighter proof hierarchy, and copy
+aimed at technical support / IT operations reviewers.
 MSG
 )"
 git push -u origin HEAD
