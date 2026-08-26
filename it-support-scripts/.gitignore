@@ -1,0 +1,4 @@
+# Local run artifacts
+support-bundle-*/
+onboard-*.log
+*.zip

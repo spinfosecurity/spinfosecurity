@@ -30,6 +30,10 @@ Defensive exposure-discovery tooling for authorized networks—Modbus, DNP3, BAC
 
 - **[Nmap for ICS/OT Security](https://github.com/spinfosecurity/nmap-ot-howto)** — authorized ICS/OT exposure discovery with Nmap ([mirror](docs/nmap-ot-howto/README.md) · [review map](docs/nmap-ot-howto/FOR-EMPLOYERS.md))
 
+## IT Services toolkit
+
+- **[IT Support Scripts](it-support-scripts/)** — simple Bash + PowerShell helpers for L2-style work: network triage, health snapshots, support bundles, DNS/DHCP renew, onboarding checklists ([employer review](it-support-scripts/FOR-EMPLOYERS.md))
+
 ## Links
 
 - Portfolio: https://spinfosecurity.github.io
