@@ -1,11 +1,11 @@
-# Job-hunting site
+# Portfolio site
 
-Portfolio for https://spinfosecurity.github.io/ — framed for **IT Services Technician** screens.
+Source for https://spinfosecurity.github.io/
 
-Primary proof: PowerShell IT Triage Toolkit.  
-Secondary proof: ICS/OT scanners as scripting + networking + docs.
+Primary: PowerShell IT Triage Toolkit.  
+Also: ICS/OT scanners as scripting + networking + docs.
 
-## Publish (local as spinfosecurity)
+## Publish (as spinfosecurity)
 
 ```bash
 WORKDIR="$(mktemp -d)"

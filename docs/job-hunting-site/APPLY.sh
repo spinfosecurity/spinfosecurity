@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Publish the job-hunting site redesign to spinfosecurity.github.io
+# Publish the portfolio site to spinfosecurity.github.io
 # Requires: gh authenticated as spinfosecurity
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -14,7 +14,7 @@ ACTIVE="$(gh api user --jq .login)"
 echo "==> Cloning site..."
 git clone --depth 1 https://github.com/spinfosecurity/spinfosecurity.github.io.git "$WORK/site"
 cd "$WORK/site"
-BRANCH="cursor/job-hunting-site-ux-$(date +%Y%m%d%H%M)"
+BRANCH="cursor/portfolio-site-$(date +%Y%m%d%H%M)"
 git checkout -b "$BRANCH"
 
 cp "$ROOT/index.html" "$ROOT/styles.css" "$ROOT/404.html" "$ROOT/favicon.svg" "$ROOT/robots.txt" "$ROOT/sitemap.xml" .
@@ -32,10 +32,9 @@ done
 
 git add -A
 git commit -m "$(cat <<'MSG'
-Refresh portfolio UX for IT services screens
+Update portfolio site
 
-Aerospace-ops visual system, tighter proof hierarchy, and copy
-aimed at technical support / IT operations reviewers.
+Sync index, styles, and project pages from the hub repo.
 MSG
 )"
 git push -u origin HEAD
@@ -43,5 +42,5 @@ git push -u origin HEAD
 echo ""
 echo "Pushed $BRANCH"
 echo "Create + merge PR:"
-echo "  gh pr create --repo spinfosecurity/spinfosecurity.github.io --base main --head $BRANCH --title \"Polish portfolio UX and feature ICS/OT Advisories\" --body \"Brand-first hero, human-readable copy, Advisories section and nav.\""
+echo "  gh pr create --repo spinfosecurity/spinfosecurity.github.io --base main --head $BRANCH --title \"Update portfolio site\" --body \"Sync latest portfolio copy from the hub repo.\""
 echo "  gh pr merge --repo spinfosecurity/spinfosecurity.github.io --merge --delete-branch"
