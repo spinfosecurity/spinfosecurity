@@ -1,27 +1,25 @@
-# IT Support Scripts (PowerShell)
+# IT Triage Toolkit (PowerShell)
 
-**Mission:** get people unblocked fast.
+Second-line style helpers for Windows endpoints: diagnose, fix safely, prove it, escalate cleanly.
 
-Six PowerShell tools you can explain in plain English on a video call. Each one encodes a decision a strong helpdesk tech makes — then makes it repeatable.
+| Script | What it does |
+|--------|----------------|
+| [`Why-Broken.ps1`](powershell/Why-Broken.ps1) | Checks clock, DNS honesty, disk, gateway, and HTTPS — ranks what to fix first |
+| [`Dns-Truth.ps1`](powershell/Dns-Truth.ps1) | Compares Windows DNS to Cloudflare public DNS (captive portal / hijack signals) |
+| [`Auth-Clock.ps1`](powershell/Auth-Clock.ps1) | Measures clock skew (common “wrong password” / SSO cause); optional resync |
+| [`Reach-Matrix.ps1`](powershell/Reach-Matrix.ps1) | Tests TCP reachability to critical services — path problem vs app problem |
+| [`Stack-Reset.ps1`](powershell/Stack-Reset.ps1) | Flushes DNS and renews DHCP with before/after proof (prefer over reboot) |
+| [`Escalate-Smart.ps1`](powershell/Escalate-Smart.ps1) | Builds a one-page escalation brief: impact, hypothesis, tried steps, one ask |
 
-| Script | One-liner you’d say to an interviewer |
-|--------|--------------------------------------|
-| [`Why-Broken.ps1`](powershell/Why-Broken.ps1) | “Checks the usual culprits — clock, DNS lies, disk, gateway, HTTPS — and tells you what to fix first.” |
-| [`Dns-Truth.ps1`](powershell/Dns-Truth.ps1) | “Compares what Windows DNS says to Cloudflare’s public DNS so we catch captive portals and hijacks.” |
-| [`Auth-Clock.ps1`](powershell/Auth-Clock.ps1) | “A lot of ‘wrong password’ tickets are just a wrong PC clock — this measures skew and can sync it.” |
-| [`Reach-Matrix.ps1`](powershell/Reach-Matrix.ps1) | “Can this laptop reach the services that matter? If yes, it’s the app — not the network.” |
-| [`Stack-Reset.ps1`](powershell/Stack-Reset.ps1) | “Flush DNS, renew DHCP, prove it worked — instead of the reboot ritual.” |
-| [`Escalate-Smart.ps1`](powershell/Escalate-Smart.ps1) | “Builds a one-page brief for senior IT: what failed, what I tried, one clear ask.” |
-
-## How you’d use them on a call
+## Workflow
 
 ```
 Why-Broken  →  fix #1  →  re-run
     │
-    ├─ DNS looks weird  →  Dns-Truth
-    ├─ login flaky      →  Auth-Clock -Fix
-    ├─ “is it IT?”      →  Reach-Matrix
-    └─ still broken     →  Stack-Reset -Apply  →  Escalate-Smart
+    ├─ DNS looks wrong   →  Dns-Truth
+    ├─ Login / SSO flaky →  Auth-Clock -Fix
+    ├─ “Is it the network?” →  Reach-Matrix
+    └─ Still broken      →  Stack-Reset -Apply  →  Escalate-Smart
 ```
 
 ## Run
@@ -29,18 +27,20 @@ Why-Broken  →  fix #1  →  re-run
 ```powershell
 Set-ExecutionPolicy -Scope Process Bypass
 cd it-support-scripts
-Copy-Item targets.example.conf targets.conf   # edit to your real services
+Copy-Item targets.example.conf targets.conf   # point at your real services
 .\powershell\Why-Broken.ps1
 .\powershell\Escalate-Smart.ps1
 ```
 
-## Docs
+Edit `targets.conf` for Reach-Matrix (GitHub, IdP, chat, internal apps — whatever your environment needs).
 
-- [PRINCIPLES.md](PRINCIPLES.md) — why these six
+## Design notes
+
+See [PRINCIPLES.md](PRINCIPLES.md).
 
 ## Safety
 
-Authorized machines only. Checks are read-only until you pass `-Apply` / `-Fix`. No Active Directory changes from these scripts.
+Use on systems you are authorized to support. Diagnostics are read-only until you pass `-Apply` or `-Fix`. These scripts do not change Active Directory or IdP accounts.
 
 ## License
 

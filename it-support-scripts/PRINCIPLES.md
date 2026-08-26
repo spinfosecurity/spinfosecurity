@@ -1,22 +1,20 @@
 # Principles
 
-PowerShell only — that’s the skill on the resume and in the interview.
+Goal: **minimize time until someone is unblocked.**
 
-## The six (all explainable in plain English)
-
-| Script | Job |
-|--------|-----|
-| Why-Broken | Rank what’s wrong before opening a ticket |
-| Dns-Truth | Catch DNS lies / captive portals |
-| Auth-Clock | Fix “wrong password” that’s really clock skew |
-| Reach-Matrix | Separate network path vs app failure |
-| Stack-Reset | Heal DNS/DHCP with proof — not reboot |
-| Escalate-Smart | One-page brief for senior IT |
+| Script | Why it exists |
+|--------|----------------|
+| Why-Broken | Rank causes — don’t dump `ipconfig` into a ticket |
+| Dns-Truth | Local DNS can lie; compare to an independent answer |
+| Auth-Clock | Many “bad password” cases are clock skew |
+| Reach-Matrix | Separate network path failure from application failure |
+| Stack-Reset | Change DNS/DHCP, then prove the delta — don’t hide issues under reboot |
+| Escalate-Smart | Senior time is scarce — one page, one concrete ask |
 
 ## Rules
 
-1. Optimize **unblocked people**, not ticket cosmetics  
-2. End triage with **#1 cause + fix**  
-3. **Prove** changes (before/after)  
-4. Escalate **sharp** — impact, tried, evidence, one ask  
-5. If you can’t explain it on a video call, it doesn’t ship here  
+1. Optimize unblocked people, not ticket cosmetics  
+2. End triage with **#1 cause + suggested fix**  
+3. Prove changes with before/after checks  
+4. Escalate with impact, what you tried, evidence, and one ask  
+5. Keep tools simple enough to explain and operate under pressure  
