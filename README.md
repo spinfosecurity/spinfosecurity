@@ -45,7 +45,7 @@ Set-ExecutionPolicy -Scope Process Bypass
 
 ## About
 
-Open to **IT Services Technician / technical support** roles where PowerShell, network troubleshooting, clear tickets, and security hygiene matter. ICS/OT work is additional proof of scripting and documentation discipline.
+Public PowerShell tools for endpoint triage, network checks, and clean escalations—plus defensive ICS/OT reachability scanners with clear authorized-use limits.
 
 ## Links
 

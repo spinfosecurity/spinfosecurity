@@ -17,4 +17,4 @@ Goal: **minimize time until someone is unblocked.**
 2. End triage with **#1 cause + suggested fix**  
 3. Prove changes with before/after checks  
 4. Escalate with impact, what you tried, evidence, and one ask  
-5. Keep tools simple enough to explain and operate under pressure  
+5. Keep tools simple enough to run and explain during real support work  
