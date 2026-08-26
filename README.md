@@ -1,13 +1,17 @@
 # SpinfoSecurity
 
-**IT triage automation and defensive network tooling — PowerShell-first, public, reviewable.**
+**PowerShell IT triage for Windows endpoints — plus defensive network tooling you can review in public code.**
 
-[![Portfolio site](https://img.shields.io/badge/Portfolio-spinfosecurity.github.io-0c6f74?style=flat-square)](https://spinfosecurity.github.io)
-[![IT Triage Toolkit](https://img.shields.io/badge/IT%20Triage-PowerShell-blue?style=flat-square)](it-support-scripts/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-22c55e?style=flat-square)](it-support-scripts/LICENSE)
+[![PowerShell](https://img.shields.io/badge/PowerShell-5.1%2B%20%7C%207+-5391FE?style=flat-square&logo=powershell&logoColor=white)](it-support-scripts/)
+[![Platform](https://img.shields.io/badge/Platform-Windows-0078D4?style=flat-square&logo=windows&logoColor=white)](it-support-scripts/)
+[![Focus](https://img.shields.io/badge/Focus-IT%20Services%20%2F%20Triage-0c6f74?style=flat-square)](it-support-scripts/)
+[![Portfolio](https://img.shields.io/badge/Portfolio-spinfosecurity.github.io-111827?style=flat-square)](https://spinfosecurity.github.io)
+[![Last commit](https://img.shields.io/github/last-commit/spinfosecurity/spinfosecurity?style=flat-square)](https://github.com/spinfosecurity/spinfosecurity/commits/main)
 
-## IT Triage Toolkit (primary for IT services roles)
+## IT Triage Toolkit
 
-**[it-support-scripts](it-support-scripts/)** — PowerShell helpers for second-line style work:
+**[it-support-scripts](it-support-scripts/)** — second-line style PowerShell helpers:
 
 | Script | Purpose |
 |--------|---------|
@@ -18,9 +22,15 @@
 | Stack-Reset | DNS/DHCP reset with before/after proof |
 | Escalate-Smart | One-page escalation brief |
 
+```powershell
+cd it-support-scripts
+Set-ExecutionPolicy -Scope Process Bypass
+.\powershell\Why-Broken.ps1
+```
+
 ## Also: ICS/OT defensive scanners
 
-**[ICS OT Protector](https://github.com/spinfosecurity/ics-ot-protector)** — authorized TCP reachability scanners for industrial networks (water, energy, building automation, rail). Same transferable craft: PowerShell/Bash, networking, structured findings, operator docs. MIT · no exploit payloads.
+**[ICS OT Protector](https://github.com/spinfosecurity/ics-ot-protector)** — authorized TCP reachability scanners for industrial networks (water, energy, building automation, rail). Same craft: scripting, networking, structured findings, operator docs. MIT · no exploit payloads.
 
 | Sector | Scanner |
 |--------|---------|
@@ -29,15 +39,13 @@
 | Building automation | BAS Guardian |
 | Rail & transit | Rail-OT-Protector |
 
-**Review:** [5-minute guide](https://github.com/spinfosecurity/ics-ot-protector/blob/main/docs/for-employers.md) · [Portfolio](https://spinfosecurity.github.io)
-
 ## Guides
 
 - **[Nmap for ICS/OT Security](https://github.com/spinfosecurity/nmap-ot-howto)** — authorized exposure discovery with Nmap ([mirror](docs/nmap-ot-howto/README.md))
 
 ## About
 
-Open to **IT services / technical support** and IT operations roles where PowerShell, network troubleshooting, clear tickets, and security hygiene matter. ICS/OT work is additional proof of scripting and documentation discipline—not the only story.
+Open to **IT Services Technician / technical support** roles where PowerShell, network troubleshooting, clear tickets, and security hygiene matter. ICS/OT work is additional proof of scripting and documentation discipline.
 
 ## Links
 
