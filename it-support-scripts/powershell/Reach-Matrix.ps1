@@ -1,6 +1,9 @@
 <#
 .SYNOPSIS
-  TCP reachability matrix — is IT blocking me, or is the app broken?
+  Can this laptop reach the services that matter? Path problem vs app problem.
+
+.PARAMETER TargetsFile
+  name|host|port|tcp lines. Defaults to targets.conf or targets.example.conf.
 #>
 [CmdletBinding()]
 param([string]$TargetsFile)

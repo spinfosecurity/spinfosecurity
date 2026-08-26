@@ -1,32 +1,22 @@
 # Principles
 
-## Cut until it hurts
+PowerShell only — that’s the skill on the resume and in the interview.
 
-Twelve scripts diluted the signal. The top half by **ROI × credibility**:
+## The six (all explainable in plain English)
 
-| Keep | Why it wins |
-|------|-------------|
-| why-broken | Diagnosis is ranked hypotheses, not `ipconfig /all` |
-| dns-truth | OS resolver is not ground truth — prove honesty |
-| auth-clock | “Wrong password” is often skew — first principles |
-| reach-matrix | Separates IT path failure from app failure in seconds |
-| stack-reset | Proof over reboot ritual |
-| escalate-smart | L3 time is scarce — one page, one ask |
+| Script | Job |
+|--------|-----|
+| Why-Broken | Rank what’s wrong before opening a ticket |
+| Dns-Truth | Catch DNS lies / captive portals |
+| Auth-Clock | Fix “wrong password” that’s really clock skew |
+| Reach-Matrix | Separate network path vs app failure |
+| Stack-Reset | Heal DNS/DHCP with proof — not reboot |
+| Escalate-Smart | One-page brief for senior IT |
 
-| Parked in `secondary/` | Why it lost |
-|------------------------|-------------|
-| path-quality | Overlaps reach-matrix; weaker interview story |
-| disk-reclaim | Useful, ordinary |
-| meeting-preflight | Niche |
-| fleet-fingerprint | Idea strong, implementation thin for scrutiny |
-| time-to-work | Process stopwatch ≠ scripting excellence |
-| secret-hygiene | Easy to look amateur vs real DLP |
+## Rules
 
-## Rules that remain
-
-1. **Optimize unblocked builders** — not ticket cosmetics  
-2. **Rank causes** — every triage ends in #1 / evidence / fix  
-3. **Proof over ritual** — measure → change → measure  
-4. **Ground truth beats the OS story** — DoH, edge clocks  
-5. **Escalate sharp** — impact, hypothesis, tried, evidence, one ask  
-6. **Safe by construction** — read-only default; mutations opt-in  
+1. Optimize **unblocked people**, not ticket cosmetics  
+2. End triage with **#1 cause + fix**  
+3. **Prove** changes (before/after)  
+4. Escalate **sharp** — impact, tried, evidence, one ask  
+5. If you can’t explain it on a video call, it doesn’t ship here  

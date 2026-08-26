@@ -1,6 +1,9 @@
 <#
 .SYNOPSIS
-  Idempotent network heal with before/after proof. Not a reboot.
+  Flush DNS and renew DHCP, with before/after proof. Prefer this over reboot.
+
+.PARAMETER Apply
+  Actually make changes. Without this switch, only shows the plan and before metrics.
 #>
 [CmdletBinding()]
 param([switch]$Apply)

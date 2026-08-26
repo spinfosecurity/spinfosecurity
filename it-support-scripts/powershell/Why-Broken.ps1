@@ -1,6 +1,10 @@
 <#
 .SYNOPSIS
-  Ranked root-cause self-triage. Open a ticket only if #1 needs a human.
+  Ranked root-cause check. Open a ticket only if #1 still needs a human.
+
+.DESCRIPTION
+  Checks clock skew, DNS honesty, disk space, default gateway, and outbound HTTPS.
+  Prints ranked failures with a suggested next fix.
 #>
 [CmdletBinding()]
 param()

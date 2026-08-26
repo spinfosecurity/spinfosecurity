@@ -1,6 +1,10 @@
 <#
 .SYNOPSIS
-  Compare system DNS to DoH ground truth — hijack / captive / NXDOMAIN forgery.
+  Compare Windows DNS to Cloudflare public DNS to catch lies and captive portals.
+
+.DESCRIPTION
+  Resolves a name via the OS and via DNS-over-HTTPS. Flags private/captive answers
+  and NXDOMAIN forgery (a random name that should not resolve).
 #>
 [CmdletBinding()]
 param([string]$Name = 'example.com')

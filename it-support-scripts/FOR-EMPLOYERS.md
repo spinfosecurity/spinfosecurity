@@ -1,28 +1,22 @@
 # For employers / interviewers
 
-Portfolio sample for **IT Services / L2** with an engineering bar.
+PowerShell IT Services toolkit — six scripts, all demoable in plain English.
 
-## The six (≈5 minutes)
+## 5-minute path
 
-1. `PRINCIPLES.md` — cut criteria  
-2. `bash/why-broken.sh` + `powershell/Why-Broken.ps1` — ranked diagnosis + fix hints  
-3. `bash/dns-truth.sh` — independent ground truth  
-4. `bash/auth-clock.sh` — SSO root cause most techs miss  
-5. `bash/reach-matrix.sh` — path vs app  
-6. `bash/escalate-smart.sh` — how L3 should be briefed  
+1. [TALKING-POINTS.md](TALKING-POINTS.md) — how the candidate explains each tool  
+2. `powershell/Why-Broken.ps1` — ranked diagnosis  
+3. `powershell/Auth-Clock.ps1` — SSO root cause many miss  
+4. `powershell/Reach-Matrix.ps1` — path vs app  
+5. `powershell/Escalate-Smart.ps1` — L3 brief quality  
 
 ## Role map
 
-| Need | Tool |
-|------|------|
-| Complex endpoint / network diagnosis | why-broken, dns-truth, auth-clock |
-| Fix without cargo-cult reboot | stack-reset |
-| Separate infrastructure vs application | reach-matrix |
-| Ticket quality / escalation | escalate-smart |
-| Cross-platform | Bash ↔ PowerShell pairs |
+| Need | Script |
+|------|--------|
+| Endpoint / network diagnosis | Why-Broken, Dns-Truth, Auth-Clock |
+| Fix without cargo-cult reboot | Stack-Reset |
+| Path vs application | Reach-Matrix |
+| Escalation quality | Escalate-Smart |
 
-## What this is not
-
-Not domain-admin automation. Not RMM bloat. Not “print everything and hope.”
-
-**Habit on display:** measure → rank → fix → prove → escalate only when needed.
+**Habit:** measure → rank → fix → prove → escalate only when needed.

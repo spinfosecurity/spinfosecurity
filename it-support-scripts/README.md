@@ -1,54 +1,48 @@
-# IT Support Scripts
+# IT Support Scripts (PowerShell)
 
-**Mission:** minimize minutes until a builder is unblocked.
+**Mission:** get people unblocked fast.
 
-Six high-ROI tools — Bash + PowerShell — that encode how strong IT people actually think: measure → rank → fix → prove → escalate only when needed.
+Six PowerShell tools you can explain in plain English on a video call. Each one encodes a decision a strong helpdesk tech makes — then makes it repeatable.
 
-| # | Tool | Bash | PowerShell | Job |
-|---|------|------|------------|-----|
-| 1 | **why-broken** | `why-broken.sh` | `Why-Broken.ps1` | Ranked root cause before a ticket |
-| 2 | **dns-truth** | `dns-truth.sh` | `Dns-Truth.ps1` | OS DNS vs DoH ground truth |
-| 3 | **auth-clock** | `auth-clock.sh` | `Auth-Clock.ps1` | Catch the silent SSO killer (skew) |
-| 4 | **reach-matrix** | `reach-matrix.sh` | `Reach-Matrix.ps1` | Path vs app — in one glance |
-| 5 | **stack-reset** | `stack-reset.sh` | `Stack-Reset.ps1` | Heal with before/after proof |
-| 6 | **escalate-smart** | `escalate-smart.sh` | `Escalate-Smart.ps1` | One-page ranked L3 brief |
+| Script | One-liner you’d say to an interviewer |
+|--------|--------------------------------------|
+| [`Why-Broken.ps1`](powershell/Why-Broken.ps1) | “Checks the usual culprits — clock, DNS lies, disk, gateway, HTTPS — and tells you what to fix first.” |
+| [`Dns-Truth.ps1`](powershell/Dns-Truth.ps1) | “Compares what Windows DNS says to Cloudflare’s public DNS so we catch captive portals and hijacks.” |
+| [`Auth-Clock.ps1`](powershell/Auth-Clock.ps1) | “A lot of ‘wrong password’ tickets are just a wrong PC clock — this measures skew and can sync it.” |
+| [`Reach-Matrix.ps1`](powershell/Reach-Matrix.ps1) | “Can this laptop reach the services that matter? If yes, it’s the app — not the network.” |
+| [`Stack-Reset.ps1`](powershell/Stack-Reset.ps1) | “Flush DNS, renew DHCP, prove it worked — instead of the reboot ritual.” |
+| [`Escalate-Smart.ps1`](powershell/Escalate-Smart.ps1) | “Builds a one-page brief for senior IT: what failed, what I tried, one clear ask.” |
 
-## Operating loop
+## How you’d use them on a call
 
 ```
-why-broken ──► fix #1 ──► re-run
-     │
-     ├─ DNS doubt ──► dns-truth
-     ├─ auth flakes ──► auth-clock [--fix]
-     ├─ path vs app ──► reach-matrix
-     └─ still red ──► stack-reset --apply ──► escalate-smart ──► L3
+Why-Broken  →  fix #1  →  re-run
+    │
+    ├─ DNS looks weird  →  Dns-Truth
+    ├─ login flaky      →  Auth-Clock -Fix
+    ├─ “is it IT?”      →  Reach-Matrix
+    └─ still broken     →  Stack-Reset -Apply  →  Escalate-Smart
 ```
 
-## Quick start
-
-```bash
-chmod +x bash/*.sh
-cp targets.example.conf targets.conf   # point at your real services
-./bash/why-broken.sh
-./bash/escalate-smart.sh
-```
+## Run
 
 ```powershell
 Set-ExecutionPolicy -Scope Process Bypass
-Copy-Item targets.example.conf targets.conf
+cd it-support-scripts
+Copy-Item targets.example.conf targets.conf   # edit to your real services
 .\powershell\Why-Broken.ps1
 .\powershell\Escalate-Smart.ps1
 ```
 
 ## Docs
 
-- [PRINCIPLES.md](PRINCIPLES.md) — why these six, not twelve mediocre ones
-- [FOR-EMPLOYERS.md](FOR-EMPLOYERS.md) — 5-minute review path
-- [secondary/](secondary/) — lower-ROI experiments (not the interview set)
+- [TALKING-POINTS.md](TALKING-POINTS.md) — what to say on a Google Meet interview
+- [PRINCIPLES.md](PRINCIPLES.md) — why these six
+- [FOR-EMPLOYERS.md](FOR-EMPLOYERS.md) — reviewer map
 
 ## Safety
 
-Authorized systems only. Diagnostics are read-only. Mutations (`--apply` / `-Fix`) are explicit and proven with before/after checks. No AD/IdP writes from a laptop script.
+Authorized machines only. Checks are read-only until you pass `-Apply` / `-Fix`. No Active Directory changes from these scripts.
 
 ## License
 

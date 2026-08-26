@@ -1,6 +1,9 @@
 <#
 .SYNOPSIS
-  Measure clock skew vs edge clocks; optionally sync (SSO/Kerberos killer).
+  Check if the PC clock is wrong (a common cause of "wrong password" / SSO failures).
+
+.PARAMETER Fix
+  Ask Windows Time to resync when skew is high.
 #>
 [CmdletBinding()]
 param([switch]$Fix)

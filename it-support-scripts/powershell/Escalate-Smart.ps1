@@ -1,6 +1,9 @@
 <#
 .SYNOPSIS
-  One-page ranked escalation brief for L3 — evidence, not a log landfill.
+  Build a one-page escalation brief for senior IT (not a pile of raw logs).
+
+.PARAMETER OutFile
+  Markdown path. Default: .\escalate-YYYYMMDD-HHMMSS.md
 #>
 [CmdletBinding()]
 param([string]$OutFile)
