@@ -32,7 +32,7 @@ Defensive exposure-discovery tooling for authorized networks—Modbus, DNP3, BAC
 
 ## IT Services toolkit
 
-- **[IT Support Scripts](it-support-scripts/)** — 12 first-principles Bash + PowerShell tools: ranked triage, DNS truth, path quality, auth clock, stack reset, fleet fingerprints, timed onboarding, smart escalation ([principles](it-support-scripts/PRINCIPLES.md) · [employer review](it-support-scripts/FOR-EMPLOYERS.md))
+- **[IT Support Scripts](it-support-scripts/)** — six high-ROI Bash + PowerShell tools: ranked triage, DNS truth, auth clock, reach matrix, proven stack reset, smart escalation ([principles](it-support-scripts/PRINCIPLES.md) · [employer review](it-support-scripts/FOR-EMPLOYERS.md))
 
 ## Links
 

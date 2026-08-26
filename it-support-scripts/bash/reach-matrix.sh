@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# reach-matrix — "is IT blocking me, or is the app broken?"
-# First principle: parallel yes/no to critical services beats serial guessing.
+# reach-matrix — is IT blocking the path, or is the app broken?
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 # shellcheck source=../lib/common.sh
@@ -8,52 +7,62 @@ source "${ROOT}/lib/common.sh"
 
 if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
   cat <<'EOF'
-reach-matrix — TCP reachability matrix for critical services.
+reach-matrix — parallel TCP reachability for critical services.
 
 Usage: ./reach-matrix.sh [targets.conf]
+
+Exit: 0 = all TCP targets open · 1 = one or more blocked
+Configure real services in targets.conf (see targets.example.conf).
 EOF
   exit 0
 fi
 
-CONF="${1:-}"
-if [[ -z "$CONF" ]]; then
-  [[ -f "${ROOT}/targets.conf" ]] && CONF="${ROOT}/targets.conf" || CONF="${ROOT}/targets.example.conf"
-fi
-
+CONF="${1:-$(it_targets_file "$ROOT")}"
 echo "# reach-matrix — $(it_host) @ $(it_utc)"
-echo "# $CONF"
-printf '%-18s %-28s %-6s %s\n' "SERVICE" "ENDPOINT" "PORT" "RESULT"
+echo "# targets: $CONF"
+printf '\n%-18s %-28s %-6s %s\n' "SERVICE" "ENDPOINT" "PORT" "RESULT"
 printf '%-18s %-28s %-6s %s\n' "-------" "--------" "----" "------"
 
 TMP="$(mktemp -d)"; trap 'rm -rf "$TMP"' EXIT
 idx=0
 while IFS='|' read -r name host port proto; do
-  [[ -z "${name:-}" || "$name" =~ ^# ]] && continue
-  [[ "$proto" == "icmp" ]] && continue
-  idx=$((idx+1))
+  [[ -z "${name:-}" || "$name" =~ ^[[:space:]]*# ]] && continue
+  [[ "$proto" != "tcp" ]] && continue
+  idx=$((idx + 1))
   (
-    start=$(date +%s%3N 2>/dev/null || python3 -c 'import time;print(int(time.time()*1000))')
-    ok=0
-    if it_need nc; then
-      nc -z -w 3 "$host" "$port" 2>/dev/null && ok=1
+    start_ms="$(date +%s%3N 2>/dev/null || python3 -c 'import time;print(int(time.time()*1000))')"
+    if it_tcp_check "$host" "$port"; then
+      end_ms="$(date +%s%3N 2>/dev/null || python3 -c 'import time;print(int(time.time()*1000))')"
+      printf '%-18s %-28s %-6s OPEN %sms\n' "$name" "$host" "$port" "$((end_ms - start_ms))" >"$TMP/$idx"
     else
-      # bash /dev/tcp
-      timeout 3 bash -c "echo > /dev/tcp/$host/$port" 2>/dev/null && ok=1 || true
-    fi
-    end=$(date +%s%3N 2>/dev/null || python3 -c 'import time;print(int(time.time()*1000))')
-    ms=$(( end - start ))
-    if [[ "$ok" -eq 1 ]]; then
-      printf '%-18s %-28s %-6s %s\n' "$name" "$host" "$port" "OPEN ${ms}ms" >"$TMP/$idx"
-    else
-      printf '%-18s %-28s %-6s %s\n' "$name" "$host" "$port" "BLOCKED/FAIL" >"$TMP/$idx"
+      printf '%-18s %-28s %-6s BLOCKED\n' "$name" "$host" "$port" >"$TMP/$idx"
     fi
   ) &
 done < "$CONF"
 wait || true
-for f in $(ls "$TMP"/* 2>/dev/null | sort -V); do cat "$f"; done
+
+open_n=0; block_n=0
+for f in $(ls "$TMP"/* 2>/dev/null | sort -V); do
+  line="$(cat "$f")"
+  echo "$line"
+  if [[ "$line" == *OPEN* ]]; then open_n=$((open_n + 1)); else block_n=$((block_n + 1)); fi
+done
 
 echo
-it_section "How to read"
-echo "  All OPEN → not a path issue; debug the app/credentials."
-echo "  Cluster of FAILs on 443 → proxy/VPN/firewall; run why-broken + dns-truth."
-echo "  Single FAIL → that service or its ACL — escalate to owners with this matrix."
+it_section "Summary"
+it_info "open=${open_n}  blocked=${block_n}"
+if [[ "$idx" -eq 0 ]]; then
+  it_warn "no tcp targets in $CONF"
+  exit 0
+fi
+if [[ "$block_n" -eq 0 ]]; then
+  it_ok "all TCP targets reachable — not an OS path issue; debug app/credentials/IdP"
+  exit 0
+fi
+if [[ "$open_n" -eq 0 ]]; then
+  it_fail "nothing reachable — run ./why-broken.sh and ./stack-reset.sh --apply"
+  exit 1
+fi
+it_fail "partial path failure — single-service ACL/outage or selective proxy filter"
+it_info "escalate that service's owners with this matrix attached"
+exit 1

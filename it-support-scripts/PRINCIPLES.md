@@ -1,65 +1,32 @@
 # Principles
 
-Written so a sharp engineer (or Elon) can reject bad IT tooling in seconds.
+## Cut until it hurts
 
-## 1. Optimize the real objective
+Twelve scripts diluted the signal. The top half by **ROI × credibility**:
 
-The product of IT Services is **unblocked builders**.  
-Not tickets closed, not KB article count, not “rebooted successfully.”
+| Keep | Why it wins |
+|------|-------------|
+| why-broken | Diagnosis is ranked hypotheses, not `ipconfig /all` |
+| dns-truth | OS resolver is not ground truth — prove honesty |
+| auth-clock | “Wrong password” is often skew — first principles |
+| reach-matrix | Separates IT path failure from app failure in seconds |
+| stack-reset | Proof over reboot ritual |
+| escalate-smart | L3 time is scarce — one page, one ask |
 
-If a script does not reduce time-to-unblocked or prevent a class of outage, delete it.
+| Parked in `secondary/` | Why it lost |
+|------------------------|-------------|
+| path-quality | Overlaps reach-matrix; weaker interview story |
+| disk-reclaim | Useful, ordinary |
+| meeting-preflight | Niche |
+| fleet-fingerprint | Idea strong, implementation thin for scrutiny |
+| time-to-work | Process stopwatch ≠ scripting excellence |
+| secret-hygiene | Easy to look amateur vs real DLP |
 
-## 2. Rank causes — don’t dump state
+## Rules that remain
 
-`ipconfig /all` is not diagnosis. Diagnosis is:
-
-1. gather the minimum evidence  
-2. rank hypotheses by severity × likelihood  
-3. act on #1  
-4. re-measure
-
-Every triage script here ends in **ranked hypotheses**.
-
-## 3. Prefer proof over ritual
-
-Reboot is a ritual.  
-`stack-reset` measures → changes one layer → measures again. If still broken, escalate with evidence — don’t hide the bug under a reboot.
-
-## 4. Ground truth beats the OS story
-
-DNS managers lie (captive portals, sinkholes, split-horizon mistakes).  
-`dns-truth` compares the system resolver to an independent path (DoH).  
-`auth-clock` compares local time to edge `Date` headers — because “password incorrect” is often skew.
-
-## 5. Measure the path that matters
-
-Pinging a public DNS IP proves almost nothing about git, SSO, or model APIs.  
-`path-quality` and `reach-matrix` use a configurable target list (`targets.conf`) — your real critical path.
-
-## 6. One-off vs fleet
-
-If 40 laptops share a `fleet-fingerprint`, you have a change failure — not 40 tickets.  
-Correlate before you heroically reimage one machine.
-
-## 7. Onboarding is a stopwatch
-
-Vanity: 40-item checklist.  
-Signal: **minutes until clone+build works**.  
-`time-to-work` timestamps every step and treats critical-path blocks as fires.
-
-## 8. Security is local and early
-
-The cheapest breach is the one that never leaves the laptop.  
-`secret-hygiene` hunts high-signal tokens in history and config — redacted, no exfil.
-
-## 9. Escalations must be scarce and sharp
-
-L3 attention is expensive.  
-`escalate-smart` emits a one-page brief: impact, ranked hypothesis, already-tried, evidence, **one concrete ask**. No multi-megabyte zip of noise.
-
-## 10. Safe by construction
-
-- Read-only by default  
-- Mutations behind `--apply` / `-Apply`  
-- SAFE-tier deletes only in `disk-reclaim`  
-- Never write AD/IdP from a laptop script (that belongs behind IAM + change control)
+1. **Optimize unblocked builders** — not ticket cosmetics  
+2. **Rank causes** — every triage ends in #1 / evidence / fix  
+3. **Proof over ritual** — measure → change → measure  
+4. **Ground truth beats the OS story** — DoH, edge clocks  
+5. **Escalate sharp** — impact, hypothesis, tried, evidence, one ask  
+6. **Safe by construction** — read-only default; mutations opt-in  

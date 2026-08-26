@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# dns-truth — detect lies: hijack, captive portal, split-brain, NXDOMAIN forgery.
-# First principle: the OS resolver is not ground truth. Compare it to an independent path.
+# dns-truth — OS resolver vs independent DoH. Detect hijack, captive, NXDOMAIN forgery.
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 # shellcheck source=../lib/common.sh
@@ -12,6 +11,9 @@ if [[ "$NAME" == "-h" || "$NAME" == "--help" ]]; then
 dns-truth — compare system DNS to DoH ground truth.
 
 Usage: ./dns-truth.sh [name]
+
+Flags private/CGNAT answers, empty answers, and NXDOMAIN forgery
+(random name that should not resolve).
 EOF
   exit 0
 fi
@@ -19,64 +21,40 @@ fi
 echo "# dns-truth — $NAME — $(it_host) @ $(it_utc)"
 IT_HYPS=()
 
-resolve_system() {
-  if it_need dig; then
-    dig +short +time=2 +tries=1 "$1" A 2>/dev/null | head -n 5
-  elif it_need getent; then
-    getent ahostsv4 "$1" 2>/dev/null | awk '{print $1}' | uniq | head -n 5
-  else
-    python3 - <<PY 2>/dev/null || true
-import socket
-print(socket.gethostbyname("$1"))
-PY
-  fi
-}
-
-resolve_doh() {
-  curl -s --max-time 5 "https://cloudflare-dns.com/dns-query?name=$1&type=A" \
-    -H 'accept: application/dns-json' 2>/dev/null |
-    sed -n 's/.*"data":"\([0-9.]*\)".*/\1/p'
-}
-
 it_section "System resolver"
-mapfile -t SYS < <(resolve_system "$NAME" | sed '/^$/d')
+mapfile -t SYS < <(it_resolve_system "$NAME")
 if [[ ${#SYS[@]} -eq 0 ]]; then
   it_fail "no answer"
-  it_hyp_add 1 "System DNS dead" "no A for $NAME"
+  it_hyp_add 1 "System DNS dead" "no A for $NAME" "check /etc/resolv.conf, VPN DNS, nic"
 else
   printf '  %s\n' "${SYS[@]}"
 fi
 
-it_section "DoH ground truth (cloudflare-dns.com)"
-mapfile -t DOH < <(resolve_doh "$NAME" | sed '/^$/d')
+it_section "DoH ground truth"
+mapfile -t DOH < <(it_resolve_doh "$NAME")
 if [[ ${#DOH[@]} -eq 0 ]]; then
-  it_warn "DoH unreachable — cannot establish ground truth (proxy/firewall?)"
-  it_hyp_add 2 "DoH path blocked" "cannot validate resolver honesty"
+  it_warn "DoH unreachable — cannot establish ground truth"
+  it_hyp_add 2 "DoH path blocked" "cloudflare-dns.com query failed" \
+    "if system DNS also empty → network; else continue with private-IP checks"
 else
   printf '  %s\n' "${DOH[@]}"
 fi
 
-it_section "Verdict"
-is_private() {
-  case "$1" in
-    10.*|192.168.*|172.1[6-9].*|172.2[0-9].*|172.3[0-1].*|100.64.*|127.*|0.0.0.0|169.254.*) return 0 ;;
-    *) return 1 ;;
-  esac
-}
-
+it_section "Honesty checks"
 for ip in "${SYS[@]:-}"; do
-  if is_private "$ip"; then
-    it_fail "system returned non-routable/public-lie address $ip"
-    it_hyp_add 1 "DNS hijack or captive portal" "$NAME → $ip (private/CGNAT)"
+  if it_is_private_ip "$ip"; then
+    it_fail "non-public answer $ip for public name"
+    it_hyp_add 1 "DNS hijack or captive portal" "$NAME → $ip" \
+      "portal login or fix DNS; do not trust browser redirects alone"
   fi
 done
 
-# NXDOMAIN forgery probe: random label should not resolve
-RAND="nx-$(head -c 16 /dev/urandom | od -An -tx1 | tr -d ' \n').invalid"
-nx="$(resolve_system "$RAND" | head -n1 || true)"
+RAND="nx-$(head -c 8 /dev/urandom | od -An -tx1 | tr -d ' \n').invalid"
+nx="$(it_resolve_system "$RAND" | head -n1 || true)"
 if [[ -n "$nx" ]]; then
   it_fail "random name resolved to $nx — NXDOMAIN forgery / sinkhole"
-  it_hyp_add 1 "NXDOMAIN forgery" "$RAND → $nx"
+  it_hyp_add 1 "NXDOMAIN forgery" "$RAND → $nx" \
+    "capture resolver IP; escalate — this is policy/malware/middlebox territory"
 else
   it_ok "random name correctly empty"
 fi
@@ -91,8 +69,9 @@ if [[ ${#SYS[@]} -gt 0 && ${#DOH[@]} -gt 0 ]]; then
   if [[ "$overlap" -eq 1 ]]; then
     it_ok "system answer intersects DoH set"
   else
-    it_warn "no overlap with DoH (CDN multi-A possible) — check private/captive flags above"
+    it_warn "no overlap with DoH (multi-CDN possible) — trust private-IP + NXDOMAIN checks"
   fi
 fi
 
 it_hyp_print
+[[ ${#IT_HYPS[@]} -gt 0 ]] && exit 1 || exit 0
