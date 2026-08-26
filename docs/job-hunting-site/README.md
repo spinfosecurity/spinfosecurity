@@ -1,12 +1,9 @@
 # Job-hunting site
 
-Portfolio for https://spinfosecurity.github.io/ — framed for IT services / technical support screens, with public OT/ICS projects as proof of scripting, networking, and docs.
+Portfolio for https://spinfosecurity.github.io/ — framed for **IT Services Technician** screens.
 
-## Visual system
-
-- Aerospace-ops light UI: steel/graphite + teal signal, Space Grotesk + IBM Plex
-- Full-bleed hero plane, slim nav, open sections (rules over heavy cards)
-- Motion: grid drift, orbit, rise — respects `prefers-reduced-motion`
+Primary proof: PowerShell IT Triage Toolkit.  
+Secondary proof: ICS/OT scanners as scripting + networking + docs.
 
 ## Publish (local as spinfosecurity)
 
