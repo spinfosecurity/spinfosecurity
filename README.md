@@ -30,6 +30,10 @@ Public automation and documentation work: network checks, triage-friendly output
 
 - **[Nmap for ICS/OT Security](https://github.com/spinfosecurity/nmap-ot-howto)** — authorized ICS/OT exposure discovery with Nmap ([mirror](docs/nmap-ot-howto/README.md) · [review map](docs/nmap-ot-howto/FOR-EMPLOYERS.md))
 
+## IT Services toolkit
+
+- **[IT Support Scripts](it-support-scripts/)** — PowerShell tools for L2 work: ranked triage, DNS honesty, auth clock, reach matrix, proven stack reset, smart escalation
+
 ## Links
 
 - Portfolio: https://spinfosecurity.github.io
