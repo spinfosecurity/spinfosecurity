@@ -36,9 +36,7 @@ Copy-Item targets.example.conf targets.conf   # edit to your real services
 
 ## Docs
 
-- [TALKING-POINTS.md](TALKING-POINTS.md) — what to say on a Google Meet interview
 - [PRINCIPLES.md](PRINCIPLES.md) — why these six
-- [FOR-EMPLOYERS.md](FOR-EMPLOYERS.md) — reviewer map
 
 ## Safety
 
