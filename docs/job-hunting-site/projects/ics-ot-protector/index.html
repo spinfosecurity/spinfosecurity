@@ -3,23 +3,24 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ICS OT Protector | Defensive OT/ICS Exposure Scanners (PowerShell + Bash)</title>
-  <meta name="description" content="ICS OT Protector is an open-source monorepo of defensive OT/SCADA exposure scanners for water, energy, building automation, and rail. TCP reachability only—PowerShell and Bash.">
+  <title>ICS OT Protector | PowerShell + Bash Network Checks</title>
+  <meta name="description" content="ICS OT Protector: open-source PowerShell and Bash scanners for authorized TCP reachability checks, severity-labeled JSON, and operator docs. Windows and Linux.">
   <meta name="robots" content="index,follow">
-  <meta name="keywords" content="ICS security scanner, OT security, SCADA exposure assessment, PowerShell ICS, Bash SCADA, BACnet, DNP3, Modbus, CISA AA26-097A, critical infrastructure">
+  <meta name="keywords" content="PowerShell automation, Bash scripting, network troubleshooting, ICS security scanner, OT security, TCP reachability, JSON reporting">
   <link rel="canonical" href="https://spinfosecurity.github.io/projects/ics-ot-protector/">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#0a1219">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="SpinfoSecurity">
-  <meta property="og:title" content="ICS OT Protector | Defensive OT/ICS Exposure Scanners">
-  <meta property="og:description" content="Authorized defensive scanners for water, energy, BAS, and rail OT/SCADA exposure discovery. JSON reports. No exploit payloads.">
+  <meta property="og:title" content="ICS OT Protector | PowerShell + Bash Network Checks">
+  <meta property="og:description" content="Authorized TCP reachability scanners with JSON triage reports. PowerShell and Bash. No exploit payloads.">
   <meta property="og:url" content="https://spinfosecurity.github.io/projects/ics-ot-protector/">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="ICS OT Protector | OT/ICS Exposure Scanners">
-  <meta name="twitter:description" content="Open-source PowerShell and Bash monorepo for authorized OT/SCADA exposure discovery across four sectors.">
+  <meta name="twitter:title" content="ICS OT Protector | PowerShell + Bash Network Checks">
+  <meta name="twitter:description" content="Open-source PowerShell and Bash monorepo: reachability checks, shared config, operator-ready JSON.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=IBM+Plex+Mono:wght@500;600&family=Source+Sans+3:wght@450;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <script type="application/ld+json">
   {
@@ -37,18 +38,13 @@
       "name": "SpinfoSecurity",
       "url": "https://spinfosecurity.github.io/"
     },
-    "description": "Open-source collection of sector-specific OT/SCADA exposure scanners using TCP reachability checks, with PowerShell and Bash implementations and JSON reporting.",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
-    },
+    "description": "Open-source PowerShell and Bash scanners for authorized TCP reachability checks across water, energy, building automation, and rail—with severity-ranked JSON reports.",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
     "featureList": [
-      "Water and wastewater OT exposure scanning",
-      "Power grid and substation OT exposure scanning",
-      "Building automation / BACnet exposure scanning",
-      "Rail and transit OT exposure scanning",
+      "PowerShell and Bash CLIs",
+      "TCP reachability checks",
       "Severity-ranked JSON reports",
+      "Shared config across sectors",
       "Authorized defensive use only"
     ]
   }
@@ -59,17 +55,17 @@
     <a class="brand" href="/">SpinfoSecurity</a>
     <nav class="nav" aria-label="Primary">
       <a href="/">Portfolio</a>
+      <a href="/#work">Work</a>
       <a href="https://spinfosecurity.github.io/ics-ot-advisories/">Advisories</a>
-      <a href="/#proof">Proof of work</a>
       <a href="https://github.com/spinfosecurity/ics-ot-protector" aria-current="page">Source</a>
     </nav>
   </header>
 
   <main class="wrap prose">
     <section class="hero" aria-labelledby="project-title">
-      <p class="kicker">Critical infrastructure · open source · MIT</p>
-      <h1 id="project-title" class="hero-brand" style="font-size: clamp(2.1rem, 5.5vw, 3.4rem); max-width: 16ch;">ICS OT Protector</h1>
-      <p class="lede">Defensive OT/SCADA exposure discovery across water, energy, building automation, and rail. PowerShell and Bash scanners for authorized networks: TCP reachability checks, sector port catalogs, and analyst-ready JSON reports.</p>
+      <p class="kicker">PowerShell + Bash · network checks · MIT</p>
+      <h1 id="project-title" class="hero-brand" style="font-size: clamp(2.1rem, 5.5vw, 3.4rem); max-width: 16ch; color: var(--ink);">ICS OT Protector</h1>
+      <p class="lede">Public proof of scripting, TCP reachability troubleshooting, and handoff-ready reporting. Sector scanners for water, energy, building automation, and rail—same craft IT services needs: automate the check, label the finding, document the next step.</p>
       <div class="actions">
         <a class="btn" href="https://github.com/spinfosecurity/ics-ot-protector">View source on GitHub</a>
         <a class="btn btn-ghost" href="https://github.com/spinfosecurity/ics-ot-protector#quick-start">Quick start</a>
@@ -77,19 +73,20 @@
     </section>
 
     <section class="section" aria-labelledby="sectors-heading">
-      <h2 id="sectors-heading">Sectors</h2>
+      <p class="section-label">Sectors</p>
+      <h2 id="sectors-heading">One monorepo, four scanners</h2>
       <p class="section-intro">Former standalone repos are archived. Development continues here.</p>
       <ul class="sector-list">
         <li>
           <a href="https://github.com/spinfosecurity/ics-ot-protector/tree/main/scanners/water">
             Water &amp; wastewater (WUP)
-            <span>Interactive scanners; CISA water-sector oriented checks</span>
+            <span>Interactive scanners · structured findings</span>
           </a>
         </li>
         <li>
           <a href="https://github.com/spinfosecurity/ics-ot-protector/tree/main/scanners/energy-grid">
             Power grid &amp; substation (EGP)
-            <span>CLI subnet scans; ICS protocols and named vendor CVE ports</span>
+            <span>CLI subnet scans · protocol-aware ports</span>
           </a>
         </li>
         <li>
@@ -101,17 +98,18 @@
         <li>
           <a href="https://github.com/spinfosecurity/ics-ot-protector/tree/main/scanners/rail">
             Rail &amp; transit (ROP)
-            <span>Remote-access and ICS protocol exposure checks</span>
+            <span>Remote-access and ICS protocol checks</span>
           </a>
         </li>
       </ul>
     </section>
 
     <section class="section" aria-labelledby="does-heading">
+      <p class="section-label">Behavior</p>
       <h2 id="does-heading">What it does</h2>
       <ul>
         <li>Scans authorized IPv4 subnets for reachable remote-access and OT/ICS-related TCP ports</li>
-        <li>Labels findings by severity for triage conversations with IT and OT teams</li>
+        <li>Labels findings by severity for triage conversations with IT and operators</li>
         <li>Emits JSON reports with sector metadata and a normalized findings array</li>
         <li>Points operators to public CISA/ICS-oriented remediation guidance in-repo</li>
       </ul>

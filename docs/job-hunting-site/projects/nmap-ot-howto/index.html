@@ -3,27 +3,27 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Nmap for ICS/OT Security | SpinfoSecurity</title>
-  <meta name="description" content="Install Nmap and run authorized ICS/OT exposure discovery for Modbus, EtherNet/IP, Siemens S7, DNP3, BACnet, and IEC 104. Conservative timing, identity NSE, remediation-focused reporting. No exploit payloads.">
+  <title>Nmap for ICS/OT Security | SpinfoSecurity Runbook</title>
+  <meta name="description" content="Runbook: install Nmap, use safe defaults, and report findings for authorized ICS/OT exposure discovery. Clear steps, explicit limits, no exploit payloads.">
   <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large">
-  <meta name="keywords" content="Nmap ICS, Nmap OT, SCADA, Modbus, EtherNet/IP, Siemens S7, DNP3, BACnet, ICS security, OT security, exposure discovery">
+  <meta name="keywords" content="Nmap, runbook, ICS, OT, network troubleshooting, documentation, Modbus, EtherNet/IP, DNP3, BACnet">
   <link rel="canonical" href="https://spinfosecurity.github.io/projects/nmap-ot-howto/">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <meta name="theme-color" content="#0c6f74">
+  <meta name="theme-color" content="#0a1219">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="en_US">
   <meta property="og:site_name" content="SpinfoSecurity">
-  <meta property="og:title" content="Nmap for ICS/OT Security | SpinfoSecurity">
-  <meta property="og:description" content="Authorized Nmap guide for ICS/OT networks: safe timing, industrial ports, identity NSE, remediation-focused reporting.">
+  <meta property="og:title" content="Nmap for ICS/OT Security | SpinfoSecurity Runbook">
+  <meta property="og:description" content="Authorized Nmap guide: safe timing, industrial ports, identity NSE, remediation-focused reporting.">
   <meta property="og:url" content="https://spinfosecurity.github.io/projects/nmap-ot-howto/">
   <meta property="og:image" content="https://spinfosecurity.github.io/og-image.svg">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Nmap for ICS/OT Security | SpinfoSecurity">
-  <meta name="twitter:description" content="Authorized Nmap guide for industrial control systems and operational technology.">
+  <meta name="twitter:title" content="Nmap for ICS/OT Security | SpinfoSecurity Runbook">
+  <meta name="twitter:description" content="Install, safe defaults, report findings—written like an internal IT guide.">
   <meta name="twitter:image" content="https://spinfosecurity.github.io/og-image.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=IBM+Plex+Mono:wght@500;600&family=Source+Sans+3:wght@450;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <script type="application/ld+json">
   {
@@ -31,28 +31,11 @@
     "@type": "TechArticle",
     "headline": "Nmap for ICS/OT Security",
     "name": "Nmap for ICS/OT Security",
-    "description": "Guide to installing Nmap and using it for authorized ICS/OT exposure discovery with conservative timing and identity-oriented NSE scripts.",
+    "description": "Runbook for installing Nmap and using it for authorized ICS/OT exposure discovery with conservative timing and identity-oriented NSE scripts.",
     "url": "https://github.com/spinfosecurity/nmap-ot-howto",
-    "author": {
-      "@type": "Person",
-      "name": "SpinfoSecurity",
-      "url": "https://spinfosecurity.github.io/"
-    },
-    "publisher": {
-      "@type": "Person",
-      "name": "SpinfoSecurity",
-      "url": "https://spinfosecurity.github.io/"
-    },
-    "keywords": [
-      "ICS security",
-      "OT security",
-      "Nmap",
-      "SCADA",
-      "Modbus",
-      "EtherNet/IP",
-      "DNP3",
-      "BACnet"
-    ],
+    "author": { "@type": "Person", "name": "SpinfoSecurity", "url": "https://spinfosecurity.github.io/" },
+    "publisher": { "@type": "Person", "name": "SpinfoSecurity", "url": "https://spinfosecurity.github.io/" },
+    "keywords": ["Nmap", "runbook", "ICS security", "OT security", "network troubleshooting"],
     "license": "https://opensource.org/licenses/MIT"
   }
   </script>
@@ -64,25 +47,25 @@
     <a class="brand" href="/">SpinfoSecurity</a>
     <nav class="nav" aria-label="Primary">
       <a href="/">Portfolio</a>
-      <a href="/#proof">Projects</a>
+      <a href="/#docs">Docs</a>
       <a href="https://github.com/spinfosecurity/nmap-ot-howto" aria-current="page">Source</a>
     </nav>
   </header>
 
   <main id="main" class="wrap prose">
     <section class="hero" aria-labelledby="project-title">
-      <p class="kicker">ICS / OT · MIT · documentation</p>
-      <h1 id="project-title" class="hero-brand" style="font-size: clamp(2.1rem, 5.5vw, 3.4rem); max-width: 18ch;">Nmap for ICS/OT Security</h1>
-      <p class="lede">Install Nmap and run <strong>authorized</strong> industrial exposure discovery for Modbus, EtherNet/IP, Siemens S7, DNP3, BACnet, IEC 104, and related protocols — with conservative timing, identity-oriented NSE, and remediation-focused reporting.</p>
+      <p class="kicker">Runbook · install → safe defaults → report</p>
+      <h1 id="project-title" class="hero-brand" style="font-size: clamp(2.1rem, 5.5vw, 3.4rem); max-width: 18ch; color: var(--ink);">Nmap for ICS/OT Security</h1>
+      <p class="lede">Knowledge-base style guide for <strong>authorized</strong> industrial exposure discovery. Install Nmap, use conservative timing, identify protocols, and report findings clearly—explicit limits, no exploit payloads.</p>
       <div class="actions">
         <a class="btn" href="https://github.com/spinfosecurity/nmap-ot-howto">View on GitHub</a>
         <a class="btn btn-ghost" href="https://github.com/spinfosecurity/nmap-ot-howto#2-first-engagement-walkthrough">Example walkthrough</a>
-        <a class="btn btn-ghost" href="https://github.com/spinfosecurity/nmap-ot-howto/blob/main/FOR-EMPLOYERS.md">Review map</a>
       </div>
     </section>
 
     <section class="section" aria-labelledby="guide-heading">
-      <h2 id="guide-heading">In the guide</h2>
+      <p class="section-label">In the guide</p>
+      <h2 id="guide-heading">Steps an operator can follow</h2>
       <ul class="sector-list">
         <li>
           <a href="https://github.com/spinfosecurity/nmap-ot-howto#3-install-nmap">
@@ -92,8 +75,8 @@
         </li>
         <li>
           <a href="https://github.com/spinfosecurity/nmap-ot-howto#4-pre-scan-checklist">
-            OT-safe defaults
-            <span>Slow timing and rate limits · avoid <code>-A</code> / <code>-T4</code> on live OT</span>
+            Safe defaults
+            <span>Slow timing and rate limits · avoid hot flags on live OT</span>
           </a>
         </li>
         <li>
@@ -112,8 +95,9 @@
     </section>
 
     <section class="section" aria-labelledby="pair-heading">
+      <p class="section-label">Pairing</p>
       <h2 id="pair-heading">With ICS OT Protector</h2>
-      <p class="section-intro">Use this guide for Nmap options and protocol identity. Use <a href="/projects/ics-ot-protector/">ICS OT Protector</a> for sector port catalogs, shared scan engines, and JSON/CSV reporting across water, energy, BAS, and rail.</p>
+      <p class="section-intro">Use this guide for Nmap options and protocol identity. Use <a href="/projects/ics-ot-protector/">ICS OT Protector</a> for sector port catalogs, shared scan engines, and JSON reporting.</p>
       <div class="truth-box">
         <article>
           <h3>Is</h3>
@@ -121,7 +105,7 @@
         </article>
         <article>
           <h3>Is not</h3>
-          <p>Exploit payloads, credential attacks, or DoS recipes against production ICS/OT devices.</p>
+          <p>Exploit payloads, credential attacks, or DoS recipes against production devices.</p>
         </article>
       </div>
     </section>
