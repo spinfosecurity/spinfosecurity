@@ -2,6 +2,12 @@
 
 Second-line style helpers for Windows endpoints: diagnose, fix safely, prove it, escalate cleanly.
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-22c55e?style=flat-square)](LICENSE)
+[![PowerShell](https://img.shields.io/badge/PowerShell-5.1%2B%20%7C%207+-5391FE?style=flat-square&logo=powershell&logoColor=white)](powershell/)
+[![Platform](https://img.shields.io/badge/Platform-Windows-0078D4?style=flat-square&logo=windows&logoColor=white)](#run)
+[![Safety](https://img.shields.io/badge/Default-Read%20only-0c6f74?style=flat-square)](#safety)
+[![Scripts](https://img.shields.io/badge/Scripts-6-111827?style=flat-square)](powershell/)
+
 | Script | What it does |
 |--------|----------------|
 | [`Why-Broken.ps1`](powershell/Why-Broken.ps1) | Checks clock, DNS honesty, disk, gateway, and HTTPS — ranks what to fix first |
